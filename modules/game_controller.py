@@ -34,6 +34,7 @@ class Controller:
 
         # logger = Logger()
 
+        # Setup Settings
         for setting in required_settings:
             if setting not in self.settings:
                 print(f"Setting {setting} not found in config.txt")
@@ -41,8 +42,19 @@ class Controller:
         
         self.get_window()
 
-        # Gets the first window selected with the window name equal to window_name
+        # Get all the file paths for get_type and get_info
+        self.cvTypeFiles = []
+        for f in os.listdir("opencvData/types"):
+            self.cvTypeFiles.append(f"opencvData/types/{f}")
 
+        self.cvInfoFiles = []
+        for f in os.listdir("opencvData/parts"):
+            self.cvInfoFiles.append(f"opencvData/info/{f}")
+
+        print(self.cvTypeFiles)
+        print(self.cvInfoFiles)
+
+    # Gets the first window selected with the window name equal to window_name
     def get_window(self):
         self.balatro = None
         while self.balatro == None:
@@ -66,6 +78,13 @@ class Controller:
     
     def get_screen_type(self):
         screenshot = self.get_screenshot()
+        confidence = []
+        for f in self.cvTypeFiles:
+            img = cv.imread(f)
+            result = cv.matchTemplate(screenshot, img, cv.TM_CCOEFF_NORMED)
+            confidence.append(result)
+        
+        return self.cvTypeFiles[confidence.index(max(confidence))]
         
 
     def get_screen_info(self):
