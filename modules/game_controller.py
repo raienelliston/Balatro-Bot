@@ -1,6 +1,6 @@
 import pygetwindow as gw
 import pyautogui as pag
-from modules.logger import Logger
+# from modules.logger import Logger
 import cv2 as cv
 import os
 
@@ -106,8 +106,20 @@ class Controller:
             return None
 
     def click(self, x, y):
-        pag.click(x, y)
+        x = self.balatro.width / 1920 * x
+        y = self.balatro.height / 1080 * y
+        x = self.balatro.left + x
+        y = self.balatro.top + y
+
+        pag.moveTo(x, y)
+        # Commented for testing purposes
+        # pag.click(x, y) 
+    
+    def resize_window(self, width, height):
+        self.balatro.resizeTo(width, height)
+        self.balatro.moveTo(0, 0)
 
 
 if __name__ == "__main__":
     controller = Controller()
+    controller.resize_window(1920, 1080)

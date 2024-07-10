@@ -5,7 +5,6 @@ from time import sleep
 def main():
     isDone = False
     controller = gc.Controller()
-    print(controller.get_screen_type())
     state = "before_game"
 
     # Main Loop
@@ -15,13 +14,13 @@ def main():
             case "before_game":
                 match controller.get_screen_type(screenshot):
                     case "mainMenu":
-                        xy = controller.get_specific_part(screenshot, "playButton.png")
-                        if xy != None:
-                            controller.click(xy[0], xy[1])
+                        print("Main Menu")
+                        controller.click(568, 932)
                     case "newRunMenu":
                         print("New Run")
                     case "continueRunMenu":
                         print("Continue Run")
+                        controller.click(1024, 916)
                     case _:
                         print("Unknown Screen")
                         # isDone = True
@@ -37,6 +36,7 @@ def main():
                         print("Unknown Screen")
                         # isDone = True
         # Sleep for 1 second for testing purposes
+        
         sleep(1)
 
 
