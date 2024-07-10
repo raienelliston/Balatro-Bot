@@ -42,14 +42,7 @@ class Controller:
         
         self.get_window()
 
-        # Get all the file paths for get_type and get_info
-        self.cvTypeFiles = []
-        for f in os.listdir("opencvData/types"):
-            self.cvTypeFiles.append(f"opencvData/types/{f}")
-
-        self.cvInfoFiles = []
-        for f in os.listdir("opencvData/parts"):
-            self.cvInfoFiles.append(f"opencvData/info/{f}")
+        self.checks = {}
 
         print(self.cvTypeFiles)
         print(self.cvInfoFiles)
@@ -76,20 +69,6 @@ class Controller:
             print(e)
             return None
     
-    # Checks the entire screen for the matching screen type in openCVData/types
-    def get_screen_type(self, screenshot):
-        screenshot.save("screenshot.png")
-        confidence = []
-        for f in self.cvTypeFiles:
-            print(f)
-            img = cv.imread(f, 0)
-            check = cv.imread("screenshot.png", 0)
-            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max() #Causing issue
-            confidence.append(result)
-        print(confidence)
-        best = self.cvTypeFiles[confidence.index(max(confidence))]
-        return best[best.rfind("/") + 1:best.rfind(".")]
-
     # Checks specific parts of the screen for matching images in openCVData/parts
     def get_screen_part(self, screenshot, path):
         screenshot.save("screenshot.png")
@@ -105,15 +84,41 @@ class Controller:
             pass
             return None
 
-    def click(self, x, y):
-        x = self.balatro.width / 1920 * x
-        y = self.balatro.height / 1080 * y
+    def find_closest_match(self, screenshot, type, path="/"):
+        # Loads the checks if not already loaded
+        try:
+            self.checks[type]
+        except KeyError:
+            self.checks[type] = None
+            if self.checks[type] == None: 
+                self.checks[type] = []
+                for f in os.listdir(path):
+                    self.cvInfoFiles.append(path + f)
+
+        # Checks the screenshot against all the checks
+        screenshot.save("screenshot.png")
+        confidence = []
+        for f in self.checks[type]:
+            img = cv.imread(f, 0)
+            check = cv.imread("screenshot.png", 0)
+            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+            confidence.append(result)
+        print(confidence)
+        best = self.checks[type][confidence.index(max(confidence))]
+        return best[best.rfind("/") + 1:best.rfind(".")]
+
+
+    def click(self, x, y, absolute=False):
+        # Changes the coordinats to account for different window sizes and locations
+        if not absolute:
+            x = self.balatro.width / 1920 * x
+            y = self.balatro.height / 1080 * y
         x = self.balatro.left + x
         y = self.balatro.top + y
 
         pag.moveTo(x, y)
         # Commented for testing purposes
-        # pag.click(x, y) 
+        pag.click(x, y) 
     
     def resize_window(self, width, height):
         self.balatro.resizeTo(width, height)
