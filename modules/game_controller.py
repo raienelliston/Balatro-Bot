@@ -1,4 +1,5 @@
 import pygetwindow as gw
+import pyautogui as pag
 from modules.logger import Logger
 import os
 
@@ -28,7 +29,7 @@ class Controller:
         #         key, value = line.split("=")
         #         self.settings[key] = value
 
-        self.setting = default_settings
+        self.settings = default_settings
 
         # logger = Logger()
 
@@ -36,12 +37,27 @@ class Controller:
             if setting not in self.settings:
                 print(f"Setting {setting} not found in config.txt")
                 exit()
-        self.balatro = gw.getWindowsWithTitle(window_name)
-        if len(self.balatro) == 0:
-            print("Balatro window not found")
-            return False
         
-        self.balatro.resize(self.settings.resolution["width"], self.settings.resolution["height"])
+        # Gets the first window selected with the window name equal to window_name
+        self.balatro = None
+        while self.balatro == None:
+            active = gw.getActiveWindow()
+            try:
+                if active.title == window_name:
+                    self.balatro = active
+            except AttributeError:
+                pass
+
+        print(self.balatro)
+
+    def get_screenshot(self):
+        try:
+            screenshot = pag.screenshot(region=(self.balatro.left, self.balatro.top, self.balatro.width, self.balatro.height))
+            return screenshot
+        except Exception as e:
+            print(e)
+            return None
+
 
 if __name__ == "__main__":
     controller = Controller()
