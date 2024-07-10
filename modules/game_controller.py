@@ -77,8 +77,7 @@ class Controller:
             return None
     
     # Checks the entire screen for the matching screen type in openCVData/types
-    def get_screen_type(self):
-        screenshot = self.get_screenshot()
+    def get_screen_type(self, screenshot):
         screenshot.save("screenshot.png")
         confidence = []
         for f in self.cvTypeFiles:
@@ -92,10 +91,22 @@ class Controller:
         return best[best.rfind("/") + 1:best.rfind(".")]
 
     # Checks specific parts of the screen for matching images in openCVData/parts
-    def get_screen_part(self, parts):
-        screenshot = self.get_screenshot()
+    def get_screen_part(self, screenshot, path):
+        screenshot.save("screenshot.png")
+        if path.isFile():
+            img = cv.imread(path, 0)
+            check = cv.imread("screenshot.png", 0)
+            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+            if result > 0.8:
+                pass
+            else:
+                return None
+        else:
+            pass
+            return None
 
-
+    def click(self, x, y):
+        pag.click(x, y)
 
 
 if __name__ == "__main__":
