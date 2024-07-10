@@ -1,6 +1,7 @@
 import pygetwindow as gw
 import pyautogui as pag
 from modules.logger import Logger
+import cv2 as cv
 import os
 
 window_name = "Balatro"
@@ -38,7 +39,11 @@ class Controller:
                 print(f"Setting {setting} not found in config.txt")
                 exit()
         
+        self.get_window()
+
         # Gets the first window selected with the window name equal to window_name
+
+    def get_window(self):
         self.balatro = None
         while self.balatro == None:
             active = gw.getActiveWindow()
@@ -52,11 +57,21 @@ class Controller:
 
     def get_screenshot(self):
         try:
+            self.get_window()
             screenshot = pag.screenshot(region=(self.balatro.left, self.balatro.top, self.balatro.width, self.balatro.height))
             return screenshot
         except Exception as e:
             print(e)
             return None
+    
+    def get_screen_type(self):
+        screenshot = self.get_screenshot()
+        
+
+    def get_screen_info(self):
+        screenshot = self.get_screenshot()
+
+
 
 
 if __name__ == "__main__":

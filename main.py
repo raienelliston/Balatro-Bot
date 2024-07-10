@@ -3,10 +3,9 @@ from PIL import Image
 from time import sleep
 
 def main():
+    isDone = False
     controller = gc.Controller()
-    screenshot = controller.get_screenshot()
-    for i in range(10):
-        screenshot.save("screenshot.png")
-        sleep(1)
+    while not isDone:
+        getInfo = controller.get_screen_info()
 
 main()
