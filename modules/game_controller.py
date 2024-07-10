@@ -70,24 +70,29 @@ class Controller:
     def get_screenshot(self):
         try:
             self.get_window()
-            screenshot = pag.screenshot(region=(self.balatro.left, self.balatro.top, self.balatro.width, self.balatro.height))
+            screenshot = pag.screenshot(region=(self.balatro.left, self.balatro.top, self.balatro.width, self.balatro.height), imageFilename="screenshot.png")
             return screenshot
         except Exception as e:
             print(e)
             return None
     
+    # Checks the entire screen for the matching screen type in openCVData/types
     def get_screen_type(self):
         screenshot = self.get_screenshot()
+        screenshot.save("screenshot.png")
         confidence = []
         for f in self.cvTypeFiles:
-            img = cv.imread(f)
-            result = cv.matchTemplate(screenshot, img, cv.TM_CCOEFF_NORMED)
+            print(f)
+            img = cv.imread(f, 0)
+            check = cv.imread("screenshot.png", 0)
+            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max() #Causing issue
             confidence.append(result)
-        
-        return self.cvTypeFiles[confidence.index(max(confidence))]
-        
+        print(confidence)
+        best = self.cvTypeFiles[confidence.index(max(confidence))]
+        return best[best.rfind("/") + 1:best.rfind(".")]
 
-    def get_screen_info(self):
+    # Checks specific parts of the screen for matching images in openCVData/parts
+    def get_screen_part(self, parts):
         screenshot = self.get_screenshot()
 
 
