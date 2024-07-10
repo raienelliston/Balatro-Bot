@@ -4,6 +4,7 @@ from time import sleep
 import keyboard
 
 run_deck = "red_deck"
+stake = "white_stake"
 
 def main():
     isDone = False
@@ -22,14 +23,32 @@ def main():
                     case "newRunMenu":
                         print("New Run")
                         
+                        # Selects the deck
                         decks = ["red_deck", "blue_deck", "yellow_deck", "green_deck", "black_deck", "magic_deck", "nebula_deck"]
-
-                        current_deck = controller.get_screen_part(screenshot, "openCVData/parts/newRunMenu/continue.png")
+                        current_deck = controller.find_closest_match(screenshot, "deck", "openCVData/decks")
                         print(current_deck)
                         index_difference = decks.index(run_deck) - decks.index(current_deck)
                         print("difference: " + str(index_difference))
+                        for i in range(abs(index_difference)):
+                            if index_difference < 0:
+                                controller.click(630, 386)
+                            else:
+                                controller.click(1292, 386)
 
-                        # controller.click(952, 840)
+                        # Selects the stake
+                        stakes = ["white_stake", "red_stake"]
+                        current_stake = controller.find_closest_match(screenshot, "stake", "openCVData/stakes")
+                        print(current_stake)
+                        index_difference = stakes.index(stake) - stakes.index(current_stake)
+                        print("difference: " + str(index_difference))
+                        for i in range(abs(index_difference)):
+                            if index_difference < 0:
+                                controller.click(630, 634)
+                            else:
+                                controller.click(1286, 634)
+
+                        controller.click(952, 840)
+                        state = "in_game"
                     case "continueRunMenu":
                         print("Continue Run")
                         controller.click(740, 182)
@@ -38,7 +57,11 @@ def main():
                         # isDone = True
             case "in_game":
                 match controller.find_closest_match(screenshot, "screen_type", "openCVData/screens"):
-                    case "bind_selection":
+                    case "blind_select_small":
+                        print("Bind Selection")
+                    case "blind_select_big":
+                        print("Bind Selection")
+                    case "blind_select_boss":
                         print("Bind Selection")
                     case "inBind":
                         print("In Bind")

@@ -1,5 +1,6 @@
 import pygetwindow as gw
 import pyautogui as pag
+import pytesseract
 # from modules.logger import Logger
 import cv2 as cv
 import os
@@ -103,10 +104,16 @@ class Controller:
             check = cv.imread("screenshot.png", 0)
             result = cv.matchTemplate(f['img'], check, cv.TM_CCOEFF_NORMED).max()
             confidence.append(result)
+        print("confidence: ", str(confidence))
         best = max(confidence)
         print(self.checks[type][confidence.index(best)]['name'])
         return self.checks[type][confidence.index(best)]['name'][:-4]
 
+    def ocr_scan(self, screenshot, area=None):
+        if area == None:
+            area = (0, 0, self.balatro.width, self.balatro.height)
+
+        
 
     def click(self, x, y, absolute=False):
         # Changes the coordinats to account for different window sizes and locations
