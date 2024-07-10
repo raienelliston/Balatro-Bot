@@ -44,8 +44,6 @@ class Controller:
 
         self.checks = {}
 
-        print(self.cvTypeFiles)
-        print(self.cvInfoFiles)
 
     # Gets the first window selected with the window name equal to window_name
     def get_window(self):
@@ -93,19 +91,21 @@ class Controller:
             if self.checks[type] == None: 
                 self.checks[type] = []
                 for f in os.listdir(path):
-                    self.cvInfoFiles.append(path + f)
+                    self.checks[type].append({
+                        "img": cv.imread(path + "/" + f, 0),
+                        "name": f
+                        })
 
         # Checks the screenshot against all the checks
         screenshot.save("screenshot.png")
         confidence = []
         for f in self.checks[type]:
-            img = cv.imread(f, 0)
             check = cv.imread("screenshot.png", 0)
-            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+            result = cv.matchTemplate(f['img'], check, cv.TM_CCOEFF_NORMED).max()
             confidence.append(result)
-        print(confidence)
-        best = self.checks[type][confidence.index(max(confidence))]
-        return best[best.rfind("/") + 1:best.rfind(".")]
+        best = max(confidence)
+        print(self.checks[type][confidence.index(best)]['name'])
+        return self.checks[type][confidence.index(best)]['name'][:-4]
 
 
     def click(self, x, y, absolute=False):

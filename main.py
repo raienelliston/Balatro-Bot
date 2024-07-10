@@ -25,7 +25,7 @@ def main():
                         decks = ["red_deck", "blue_deck", "yellow_deck", "green_deck", "black_deck", "magic_deck", "nebula_deck"]
 
                         current_deck = controller.get_screen_part(screenshot, "openCVData/parts/newRunMenu/continue.png")
-
+                        print(current_deck)
                         index_difference = decks.index(run_deck) - decks.index(current_deck)
                         print("difference: " + str(index_difference))
 
