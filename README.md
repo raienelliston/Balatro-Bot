@@ -88,48 +88,48 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] Loyalty Card
 - [] 8 Ball
 - [x] Misprint
-- [] Dusk
+- [x] Dusk
 - [] Raised Fist
 - [] Chaos the Clown
-- [] Fibonacci
-- [] Steel Joker
-- [] Scary Face
-- [] Abstract Joker
+- [x] Fibonacci
+- [x] Steel Joker
+- [x] Scary Face
+- [x] Abstract Joker
 - [] Delayed Gratification
-- [] Hack
+- [x] Hack
 - [] Pareidolia
-- [] Gros Michel
-- [] Even Steven
-- [] Odd Todd
-- [] Scholar
+- [x] Gros Michel
+- [x] Even Steven
+- [x] Odd Todd
+- [x] Scholar
 - [] Business Card
-- [] Supernova
-- [] Ride the Bus
+- [x] Supernova
+- [x] Ride the Bus
 - [] Space Joker
 - [] Egg
 - [] Burglar
 - [] Blackboard
-- [] Runner
-- [] Ice Cream
+- [x] Runner
+- [x] Ice Cream
 - [] DNA
-- [] Splash
-- [] Blue Joker
-- [] Sixth Sense
-- [] Constellation
+- [x] Splash
+- [x] Blue Joker
+- [x] Sixth Sense
+- [x] Constellation
 - [] Hiker
 - [] Faceless Joker
-- [] Green Joker
+- [x] Green Joker
 - [] Superposition
 - [] To Do List
 - [] Cavendish
 - [] Card Sharp
-- [] Red Card
-- [] Madness
-- [] Square Joker
+- [x] Red Card
+- [x] Madness
+- [x] Square Joker
 - [] Séance
 - [] Riff-Raff
 - [] Vampire
-- [] Shortcut
+- [x] Shortcut (Need to add check for if joker)
 - [] Hologram
 - [] Vagabond
 - [] Baron

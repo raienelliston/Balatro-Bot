@@ -17,6 +17,7 @@ class Algorithm:
         self.controller = controller
         # All of the defualt variables
         self.deck = ["CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "CJ", "CQ", "CK", "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "DJ", "DQ", "DK", "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "HJ", "HQ", "HK", "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "SJ", "SQ", "SK"]
+        self.current_deck = self.deck
         self.discarded = []
         self.money = 4
         self.hands = 4
@@ -209,6 +210,23 @@ class Algorithm:
         for i in range(1, 10):
             if values[i] == 1 and values[i + 1] == 1 and values[i + 2] == 1 and values[i + 3] == 1 and values[i + 4] == 1:
                 straight = True
+        if False: # CHECK IF CURRENTLY HAVE SHORTCUT
+            offset = 0
+            for i in range(1, 10):
+                offset = 0
+                if not check:
+                    for j in range(0, 5):
+                        check = True
+                        if values[i + j + offset] == 1:
+                            pass
+                        elif values[i + j + offset + 1] == 1:
+                            pass
+                            offset += 1
+                        else:
+                            check = False
+
+
+
 
         flush = False
         if 5 in suits:
@@ -284,6 +302,24 @@ class Algorithm:
         
         # print(hand)
         # print(active_cards)
+        
+        # Non-active cards in hand for joker purposes. TO-DO: Add the checks here
+        non_active_cards = []
+        non_active_hand = []
+
+        # Joker logic here that are for pre scoring
+        for joker in self.jokers:
+            if joker["name"] == "ride_the_bus":
+                joker["value"] += 1
+            elif joker["name"] == "splash":
+                active_cards = hand
+                non_active_hand = []
+            elif joker["name"] == "sixth_sense":
+                if len(hand) == 1:
+                    if hand[0][1] == 6:
+                        return 0 # Maybe want to change to just remove it from active
+
+        # Scores the hand
         for index in range(len(active_cards)):
             card = active_cards[index]
             triggers = 1
@@ -326,6 +362,12 @@ class Algorithm:
                     pass
                 triggers -= 1
 
+            face_card = False
+
+            if card[1] == "J" or card[1] == "Q" or card[1] == "K":
+                face_card = True
+            # Add if pareidolia joker, face value == true
+
             # Joker logic here that are for "on played" jokers
             on_played_triggers = 1
             while on_played_triggers > 0:
@@ -344,6 +386,30 @@ class Algorithm:
                             multiplier += 3
                     elif joker["name"] == "mime":
                         on_played_triggers += 1
+                    elif joker["name"] == "dusk":
+                        on_played_triggers += 1
+                    elif joker["name"] == "fibonacci":
+                        if card[1] == "A" or card[1] == "2" or card[1] == "3" or card[1] == "5" or card[1] == "8":
+                            multiplier += 8
+                    elif joker["name"] == "scary_face":
+                        if face_card:
+                            value += 30
+                    elif joker["name"] == "hack":
+                        if card[1] == "2" or card[1] == "3" or card[1] == "4" or card[1] == "5":
+                            on_played_triggers += 1
+                    elif joker["name"] == "even_steven":
+                        if self.identify_card(card)["value"] % 2 == 0:
+                            multiplier += 4
+                    elif joker["name"] == "odd_todd":
+                        if self.identify_card(card)["value"] % 2 != 0:
+                            value += 31
+                    elif joker["name"] == "scholar":
+                        if card[1] == "A":
+                            value += 20
+                            multiplier += 4
+                    elif joker["name"] == "ride_the_bus":
+                        if face_card:
+                            joker["value"] == 0
                 on_played_triggers -= 1
 
         # Joker logic here that are for "on hand" jokers
@@ -400,6 +466,50 @@ class Algorithm:
                     multiplier += 15
             elif joker["name"] == "misprint":
                 multiplier += 11.5
+            elif joker["name"] == "steel_joker":
+                mult = 0
+                for card in self.deck:
+                    try:
+                        if card[2] == "F":
+                            mult += 1
+                    except IndexError:
+                        pass
+                multiplier *= mult + 1
+            elif joker["name"] == "abstract_joker":
+                multiplier += 3 * len(self.jokers)
+            elif joker["name"] == "gros_miichel":
+                multiplier += 15
+            elif joker["name"] == "supernova":
+                multiplier += self.hand_values[self.hand_values.index(hand_type) + 1]["multiplier"]
+            elif joker["name"] == "ride_the_bus":
+                multiplier += joker["value"]
+            elif joker["name"] == "runner":
+                if hand_type == "straight":
+                    joker["value"] += 15
+                value += joker["value"]
+            elif joker["name"] == "ice_cream":
+                joker["value"] -= 5
+                value += joker["value"]
+            elif joker["name"] == "blue_joker":
+                value += 2 * len(self.current_deck)
+            elif joker["name"] == "constellation":
+                multiplier *= 1 + joker["value"]
+            elif joker["name"] == "green_joker":
+                multiplier += (self.hands - self.current_hands) - (self.discards - self.current_discards)
+            elif joker["name"] == "cavendish":
+                multiplier *= 3
+            elif joker["name"] == "red_card":
+                multiplier += joker["value"]
+            elif joker["name"] == "madness":
+                multiplier *= joker["value"]
+            elif joker["name"] == "square_joker":
+                if len(active_cards) + len(non_active_cards) == 4:
+                    joker["value"] += 4
+                value += joker["value"]
+
+            
+                    
+            
             
 
         # # Applies bonuses from joker editions and types
