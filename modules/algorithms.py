@@ -91,7 +91,6 @@ class Algorithm:
 
     def identify_card(self, id):
         card = {}
-        print("id = " + str(id))
         match id[0]:
             case "C":
                 card["suit"] = 1
@@ -105,7 +104,6 @@ class Algorithm:
                 card["suit"] = 0
             case "W":
                 card["suit"] = 5
-        print(card["suit"])
         match id[1]:
             case "R":
                 card["value"] = 0
@@ -184,6 +182,9 @@ class Algorithm:
             values[card["value"]] += 1
             suits[card["suit"]] += 1
         
+        print(values)
+        print(suits)
+
         # Check if it's a flush at all
         straight = False
         for i in range(1, 10):
@@ -196,50 +197,52 @@ class Algorithm:
 
         # Check for flush five
         if flush and 5 in values:
-            active_cards = [hand]
+            active_cards = hand
             hand_type = "flush_five"
         # Check for flush house
         elif flush and 3 in values and 2 in values:
-            active_cards = [hand]
+            active_cards = hand
             hand_type = "flush_house"
         # Check for five of a kind
         elif 5 in values:
-            active_cards = [hand]
+            active_cards = hand
             hand_type = "five_of_a_kind"
         # Check for straight flush
         elif flush:
             if straight:
-                active_cards = [hand]
+                active_cards = hand
                 hand_type = "straight_flush"
         # Check for four of a kind
             elif 4 in values:
-                active_cards = [hand]
+                active_cards = hand
                 hand_type = "four_of_a_kind"
         # Check for full house and flush
             else:
-                active_cards = [hand]
+                active_cards = hand
                 hand_type = "flush"
         elif 3 in values and 2 in values:
-            active_cards = [hand]
+            active_cards = hand
             hand_type = "full_house"
         # Check for straight
         elif straight:
-            active_cards = [hand]
+            active_cards = hand
             hand_type = "straight"
         # Check for three of a kind
         elif 3 in values:
-            active_cards = [hand]
+            active_cards = hand
             hand_type = "three_of_a_kind"
         # Check for two pair
         elif values.count(2) == 2:
-            active_cards = [hand]
+            active_cards = hand
             hand_type = "two_pair"
         # Check for pair
         elif 2 in values:
             for card in hand:
-                hand.remove(card)
-                if card in hand:
-                    active_cards = [card, card]
+                hand.remove(hand[0])
+                print(str(hand) + " " + str(card))
+                for card2 in hand:
+                    if self.identify_card(card)["value"] == self.identify_card(card2)["value"]:
+                        active_cards = [card, card2]
             hand_type = "pair"
         # Check for high card
         else:
@@ -260,9 +263,10 @@ class Algorithm:
                 value = type["value"]
                 multiplier = type["multiplier"]
         
+        print(hand)
         print(active_cards)
         for index in range(len(active_cards)):
-            card = active_cards[0][index]
+            card = active_cards[index]
             triggers = 1
             while triggers > 0:
                 # Initial value added
