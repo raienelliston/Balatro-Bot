@@ -1,4 +1,5 @@
 import modules.game_controller as gc
+import modules.algorithms as alg
 from PIL import Image
 from time import sleep
 import keyboard
@@ -10,6 +11,7 @@ def main():
     isDone = False
     controller = gc.Controller()
     state = "before_game"
+    alg.Algorithm(run_deck, stake, controller)
 
     # Main Loop
     while not isDone:

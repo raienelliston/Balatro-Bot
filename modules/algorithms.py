@@ -1,18 +1,33 @@
 
 
+stake_list = [
+    "white_stake",
+    "red_stake",
+    "green_stake",
+    "black_stake",
+    "blue_stake",
+    "purple_stake",
+    "orange_stake",
+    "yellow_stake",
+]
+
 class Algorithm:
-    def __init__(self, deck, stake):
+    def __init__(self, deck, stake, controller):
+        self.controller = controller
         # All of the defualt variables
         self.deck = ["CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "CJ", "CQ", "CK", "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "DJ", "DQ", "DK", "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "HJ", "HQ", "HK", "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "SJ", "SQ", "SK"]
         self.discarded = []
         self.money = 4
         self.hands = 4
+        self.hand_size = 8
         self.discards = 4
         self.jokers = []
         self.max_jokers = 5
         self.consumables = []
         self.max_consumables = 2
         self.vouchers = []
+        self.deck = deck
+        self.stake = stake_list.index(stake)
         self.hand_values = [
             {"name": "flush_five", "value": 160, "multiplier": 16, "played": 0},
             {"name": "flush_house", "value": 140, "multiplier": 14, "played": 0},
@@ -48,7 +63,7 @@ class Algorithm:
                 self.max_consumables -= 1
                 self.consumables.append("telescope")
             case "ghost_deck":
-                pass # ADD GHOST CARD
+                self.consumables.append("hex")
             case "abondoned_deck":
                 self.deck = ["CA","C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10"]
             case "checkered_deck":
@@ -57,7 +72,22 @@ class Algorithm:
                 self.vouchers.append("tarot_merchant")
                 self.vouchers.append("plant_merchant")
                 self.vouchers.append("overstock")
+            case "painted_deck":
+                self.hand_size += 2
+                self.max_jokers -= 1
+            case "anaglyph_deck":
+                None
+            case "plasma_deck":
+                None
+            case "erratic_deck":
+                None # NEED TO ADD DECK CHECK HERE
+            case _:
+                print("Unknown Deck")
+                exit()
 
+        # Handles the changes from the stake
+        if stake >= 5:
+            self.discards -= 1
 
     def identify_card(self, id):
         card = {}
@@ -90,7 +120,21 @@ class Algorithm:
                 card["value"] = int(id[1])
         return card
     
-    def hand_value(self, hand):
+    def find_best_hand(self, hand):
         value = 0
         multiplier = 1
+        best_hand = {}
 
+        # Calculate the value of every hand
+        for card1 in hand:
+            for card2 in hand.splice(hand.index(card1), 1):
+                for card3 in hand.splice(hand.index(card2), 1):
+                    for card4 in hand.splice(hand.index(card3), 1):
+                        for card5 in hand.splice(hand.index(card4), 1):
+                            hand_value = self.hand_value([card1, card2, card3, card4, card5])
+                            if hand_value["value"] > value:
+                                value = hand_value["value"]
+                                best_hand = hand_value
+
+def find_hand_value(self, hand):
+    pass
