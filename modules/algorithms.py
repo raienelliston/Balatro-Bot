@@ -1,4 +1,5 @@
 from itertools import combinations
+from collections import Counter
 
 stake_list = [
     "white_stake",
@@ -128,12 +129,28 @@ class Algorithm:
             "hand": []
         }
         print(hand)
+
+        # Setup Joker Logic, mainly for copyers
+        jokers = self.jokers
+        joker_names = []
+        sorted_jokers = jokers.sort()
+
+        for joker in jokers:
+            joker_names.append(joker['name'])
+
+        self.joker_counter = Counter(jokers)
+
         # Calculate the value of every hand
-        for card1 in hand:
-            for card2 in hand[hand.index(card1) + 1:]:
-                for card3 in hand[hand.index(card2) + 1:]:
-                    for card4 in hand[hand.index(card3) + 1:]:
-                        for card5 in hand[hand.index(card4) + 1:]:
+        for index1 in range(len(hand)):
+            card1 = hand[index1]
+            for index2 in range(index1 + 1, len(hand)):
+                card2 = hand[index2]
+                for index3 in range(index2 + 1, len(hand)):
+                    card3 = hand[index3]
+                    for index4 in range(index3 + 1, len(hand)):
+                        card4 = hand[index4]
+                        for index5 in range(index4 + 1, len(hand)):
+                            card5 = hand[index5]
                             hand_check = [card1, card2, card3, card4, card5]
                             hand_value = self.find_hand_value(hand_check)
                             if hand_value > best_hand["value"]:
@@ -172,18 +189,18 @@ class Algorithm:
         return best_hand
 
     def find_hand_value(self, hand):
-        
+        print(hand)
         # Figures out hand type and active cards
         values = [0] * 14
         suits = [0] * 5
         for card in hand:
             card = self.identify_card(card)
-            print(card)
+            # print(card)
             values[card["value"]] += 1
             suits[card["suit"]] += 1
         
-        print(values)
-        print(suits)
+        # print(values)
+        # print(suits)
 
         # Check if it's a flush at all
         straight = False
@@ -239,7 +256,7 @@ class Algorithm:
         elif 2 in values:
             for card in hand:
                 hand.remove(hand[0])
-                print(str(hand) + " " + str(card))
+                # print(str(hand) + " " + str(card))
                 for card2 in hand:
                     if self.identify_card(card)["value"] == self.identify_card(card2)["value"]:
                         active_cards = [card, card2]
@@ -263,14 +280,14 @@ class Algorithm:
                 value = type["value"]
                 multiplier = type["multiplier"]
         
-        print(hand)
-        print(active_cards)
+        # print(hand)
+        # print(active_cards)
         for index in range(len(active_cards)):
             card = active_cards[index]
             triggers = 1
             while triggers > 0:
                 # Initial value added
-                print("card = " + str(card))
+                # print("card = " + str(card))
                 value += self.identify_card(card)["value"]
                 if card[0] == "R": #Stone Card
                     value += 50
@@ -308,6 +325,21 @@ class Algorithm:
                 triggers -= 1
 
             # Joker value logic here
+            for i in self.joker_counter['joker']:
+                value += 10
+                multiplier += 1
+
+        # Applies bonuses from joker editions and types
+        for joker in self.jokers:
+            match joker['edition']:
+                case "F":
+                    value += 50
+                case "H":
+                    multiplier += 10
+                case "P":
+                    multiplier *= 1.5
+                
+
         return value * multiplier
 
 

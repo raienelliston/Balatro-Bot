@@ -61,7 +61,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] Gold Stake
 
 ### Jokers
-- [] Joker
+- [x] Joker
 - [] Greedy Joker
 - [] Lusty Joker
 - [] Wrathful Joker
