@@ -170,45 +170,45 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] Mr. Bones
 - [x] Acrobat
 - [x] Sock and Buskin
-- [] Swashbuckler
+- [x] Swashbuckler
 - [] Troubadour
 - [] Certificate
 - [] Smeared Joker
-- [] Throwback
-- [] Hanging Chad
+- [x] Throwback (Needs update check)
+- [x] Hanging Chad
 - [] Rough Gem
-- [] Bloodstone
-- [] Arrowhead
-- [] Onyx Agate
-- [] Glass Joker
+- [x] Bloodstone
+- [x] Arrowhead
+- [x] Onyx Agate
+- [x] Glass Joker
 - [] Showman
-- [] Flower Pot
+- [x] Flower Pot (Needs active check)
 - [] Blueprint
-- [] Wee Joker
+- [x] Wee Joker
 - [] Merry Andy
 - [] Oops! All 6s
 - [] The Idol
 - [] Seeing Double
 - [] Matador
-- [] Hit the Road
-- [] The Duo
-- [] The Trio
-- [] The Family
-- [] The Order
-- [] The Tribe
-- [] Stuntman
+- [x] Hit the Road
+- [x] The Duo
+- [x] The Trio
+- [x] The Family
+- [x] The Order
+- [x] The Tribe
+- [x] Stuntman
 - [] Invisible Joker
 - [] Brainstorm
 - [] Satellite
-- [] Shoot the Moon
-- [] Driver's License
+- [x] Shoot the Moon
+- [x] Driver's License
 - [] Cartomancer
 - [] Astronomer
 - [] Burnt Joker
-- [] Bootstraps
-- [] Canio
-- [] Triboulet
-- [] Yorick
+- [x] Bootstraps
+- [x] Canio
+- [x] Triboulet
+- [x] Yorick
 - [] Chicot
 - [] Perkeo
 

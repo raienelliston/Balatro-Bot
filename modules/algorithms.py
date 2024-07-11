@@ -318,7 +318,7 @@ class Algorithm:
                 if len(hand) == 1:
                     if hand[0][1] == 6:
                         return 0 # Maybe want to change to just remove it from active
-            elif joker["name"] == "seltzer" or joker["name"] == "hack" or joker["sock_and_buskin"] or joker["name"] == "mime" or joker["name"] == "dusk":
+            elif joker["name"] == "seltzer" or joker["name"] == "hack" or joker["sock_and_buskin"] or joker["name"] == "mime" or joker["name"] == "dusk" or joker["name"] == "hanging_chad":
                 joker["active"] = True
 
         # Scores the hand
@@ -436,6 +436,25 @@ class Algorithm:
                     elif joker["name"] == "sock_and_buskin":
                         if face_card and joker["active"]:
                             on_played_triggers += 1
+                    elif joker["name"] == "hanging_chad":
+                        if joker["active"]:
+                            joker["active"] = False
+                            on_played_triggers += 2 
+                    elif joker["name"] == "bloodstone":
+                        if card[0] == "H":
+                            multiplier *= 1.25
+                    elif joker["name"] == "arrowhead":
+                        if card[0] == "S":
+                            value += 50
+                    elif joker["name"] == "onyx_agate":
+                        if card[0] == "C":
+                            multiplier += 7
+                    elif joker["name"] == "wee_joker":
+                        if card[1] == "2":
+                            joker["value"] += 8
+                    elif joker["name"] == "triboulet":
+                        if card[1] == "K" or card[1] == "Q":
+                            multiplier *= 2
 
                 on_played_triggers -= 1
 
@@ -448,6 +467,13 @@ class Algorithm:
                     for card in non_active_hand:
                         if card[0] == "H":
                             multiplier *= 1.5
+                elif joker["name"] == "shoot_the_moon":
+                    for card in active_cards:
+                        if card[1] == "Q":
+                            multiplier += 13
+                    for card in non_active_hand:
+                        if card[1] == "Q":
+                            multiplier += 13
 
         # Joker logic here that are for "independent" jokers
         for joker in self.jokers:
@@ -590,6 +616,60 @@ class Algorithm:
             elif joker["name"] == "acrobat":
                 if self.current_hands == 1:
                     multiplier *= 3
+            elif joker["name"] == "swashbuckler":
+                amount = 0
+                for joker in self.jokers:
+                    amount += joker["sell_value"]
+                multiplier += amount
+            elif joker["name"] == "throwback":
+                multiplier *= joker["value"]
+            elif joker["name"] == "glass_joker":
+                multiplier *= joker["value"] 
+            elif joker["name"] == "flower_pot":
+                if joker["active"]:
+                    multiplier *= 3
+            elif joker["name"] == "wee_joker":
+                value += joker["value"]
+            elif joker["name"] == "hit_the_road":
+                amount = 1
+                for card in self.discarded:
+                    if card[1] == "J":
+                        amount += 1
+                multiplier *= amount
+            elif joker["name"] == "the_duo":
+                if hand_type == "pair":
+                    multiplier *= 2
+            elif joker["name"] == "the_trio":
+                if hand_type == "three_of_a_kind":
+                    multiplier *= 3
+            elif joker["name"] == "the_family":
+                if hand_type == "four_of_a_kind":
+                    multiplier *= 4
+            elif joker["name"] == "the_order":
+                if hand_type == "straight":
+                    multiplier *= 3
+            elif joker["name"] == "the_tribe":
+                if hand_type == "flush":
+                    multiplier *= 2
+            elif joker["name"] == "stuntman":
+                value += 250
+            elif joker["name"] == "driver's_license":
+                amount = 0
+                for card in self.deck:
+                    try:
+                        if card[2]:
+                            amount += 1
+                    except IndexError:
+                        pass
+                if amount >= 16:
+                    multiplier *= 3
+            elif joker["name"] == "bootstraps":
+                multiplier += 2 * (self.money / 5)
+            elif joker["name"] == "canio":
+                multiplier *= joker["value"]
+            elif joker["name"] == "yorick":
+                multiplier *= joker["value"]
+            
             
                     
             
