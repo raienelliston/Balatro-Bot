@@ -91,6 +91,7 @@ class Algorithm:
 
     def identify_card(self, id):
         card = {}
+        print("id = " + str(id))
         match id[0]:
             case "C":
                 card["suit"] = 1
@@ -104,7 +105,7 @@ class Algorithm:
                 card["suit"] = 0
             case "W":
                 card["suit"] = 5
-        
+        print(card["suit"])
         match id[1]:
             case "R":
                 card["value"] = 0
@@ -128,14 +129,47 @@ class Algorithm:
             "value": 0,
             "hand": []
         }
-
+        print(hand)
         # Calculate the value of every hand
-        for r in range(1, 6):
-            for hand in combinations(hand, r):
-                hand_value = self.find_hand_value(hand)
+        for card1 in hand:
+            for card2 in hand[hand.index(card1) + 1:]:
+                for card3 in hand[hand.index(card2) + 1:]:
+                    for card4 in hand[hand.index(card3) + 1:]:
+                        for card5 in hand[hand.index(card4) + 1:]:
+                            hand_check = [card1, card2, card3, card4, card5]
+                            hand_value = self.find_hand_value(hand_check)
+                            if hand_value > best_hand["value"]:
+                                best_hand["value"] = hand_value
+                                best_hand["hand"] = hand_check
+                        hand_check = [card1, card2, card3, card4]
+                        hand_value = self.find_hand_value(hand_check)
+                        if hand_value > best_hand["value"]:
+                            best_hand["value"] = hand_value
+                            best_hand["hand"] = hand_check
+                    hand_check = [card1, card2, card3]
+                    hand_value = self.find_hand_value(hand_check)
+                    if hand_value > best_hand["value"]:
+                        best_hand["value"] = hand_value
+                        best_hand["hand"] = hand_check
+                hand_check = [card1, card2]
+                hand_value = self.find_hand_value(hand_check)
                 if hand_value > best_hand["value"]:
                     best_hand["value"] = hand_value
-                    best_hand["hand"] = hand
+                    best_hand["hand"] = hand_check
+            hand_check = [card1]
+            hand_value = self.find_hand_value(hand_check)
+            if hand_value > best_hand["value"]:
+                best_hand["value"] = hand_value
+                best_hand["hand"] = hand_check
+
+
+        # for r in range(1, 6):
+        #     for hand in combinations(hand, r):
+        #         print(hand)
+        #         # hand_value = self.find_hand_value(hand)
+        #         # if hand_value > best_hand["value"]:
+        #         #     best_hand["value"] = hand_value
+                #     best_hand["hand"] = hand
 
         return best_hand
 
@@ -153,7 +187,7 @@ class Algorithm:
         # Check if it's a flush at all
         straight = False
         for i in range(1, 10):
-            if suits[i] == 1 and suits[i + 1] == 1 and suits[i + 2] == 1 and suits[i + 3] == 1 and suits[i + 4] == 1:
+            if values[i] == 1 and values[i + 1] == 1 and values[i + 2] == 1 and values[i + 3] == 1 and values[i + 4] == 1:
                 straight = True
 
         flush = False
@@ -226,11 +260,13 @@ class Algorithm:
                 value = type["value"]
                 multiplier = type["multiplier"]
         
-
-        for card in active_cards:
+        print(active_cards)
+        for index in range(len(active_cards)):
+            card = active_cards[0][index]
             triggers = 1
             while triggers > 0:
                 # Initial value added
+                print("card = " + str(card))
                 value += self.identify_card(card)["value"]
                 if card[0] == "R": #Stone Card
                     value += 50
