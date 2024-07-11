@@ -17,6 +17,8 @@ default_settings = {
     }
 }
 
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
 class Controller:
     def __init__(self):
         # Create config if not exists
@@ -42,6 +44,9 @@ class Controller:
                 exit()
         
         self.get_window()
+
+        if self.balatro.width != self.settings["resolution"]["width"] or self.balatro.height != self.settings["resolution"]["height"]:
+            self.resize_window(self.settings["resolution"]["width"], self.settings["resolution"]["height"])
 
         self.checks = {}
 
@@ -130,6 +135,35 @@ class Controller:
     def resize_window(self, width, height):
         self.balatro.resizeTo(width, height)
         self.balatro.moveTo(0, 0)
+
+
+    # Give area as a tuple (x1, y1, x2, y2)
+    def read_text(self, area=None, absolute=False):
+        if area == None:
+            area = (0, 0, self.balatro.width, self.balatro.height)
+        if not absolute:
+            area = (int(self.balatro.width / 1920 * area[0]), int(self.balatro.height / 1080 * area[1]), int(self.balatro.width / 1920 * area[2]), int(self.balatro.height / 1080 * area[3]))
+        print(area)
+        screenshot = pag.screenshot(region=area)
+        text = pytesseract.image_to_string(screenshot, lang='eng', config='--psm 6')
+        return text
+    
+    def analyze_in_bind(self, screenshot):
+        
+        # Check for the current bind amount
+        bind_amount = self.read_text((256, 256, 484, 314))
+        print(bind_amount)
+
+
+        # Check for the current round score
+
+        # Check hand size/amount
+
+        # Check deck size/amount
+
+        # Check hands left
+
+        # Check discards left
 
 
 if __name__ == "__main__":

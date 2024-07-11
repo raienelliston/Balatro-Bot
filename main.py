@@ -10,7 +10,7 @@ stake = "white_stake"
 def main():
     isDone = False
     controller = gc.Controller()
-    state = "before_game"
+    state = "in_game"
     alg.Algorithm(run_deck, stake, controller)
 
     # Main Loop
@@ -65,8 +65,12 @@ def main():
                         print("Bind Selection")
                     case "blind_select_boss":
                         print("Bind Selection")
-                    case "inBind":
+                    case "in_bind":
                         print("In Bind")
+
+
+                        bind_data = controller.analyze_in_bind(screenshot)
+                        print(bind_data)
                     case "shop":
                         print("Shop")
                     case _:
