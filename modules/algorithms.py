@@ -318,6 +318,8 @@ class Algorithm:
                 if len(hand) == 1:
                     if hand[0][1] == 6:
                         return 0 # Maybe want to change to just remove it from active
+            elif joker["name"] == "seltzer" or joker["name"] == "hack" or joker["sock_and_buskin"] or joker["name"] == "mime" or joker["name"] == "dusk":
+                joker["active"] = True
 
         # Scores the hand
         for index in range(len(active_cards)):
@@ -385,9 +387,11 @@ class Algorithm:
                         if card[0] == "C":
                             multiplier += 3
                     elif joker["name"] == "mime":
-                        on_played_triggers += 1
+                        if joker["active"]:
+                            on_played_triggers += 1
                     elif joker["name"] == "dusk":
-                        on_played_triggers += 1
+                        if joker["active"]:
+                            on_played_triggers += 1
                     elif joker["name"] == "fibonacci":
                         if card[1] == "A" or card[1] == "2" or card[1] == "3" or card[1] == "5" or card[1] == "8":
                             multiplier += 8
@@ -396,7 +400,8 @@ class Algorithm:
                             value += 30
                     elif joker["name"] == "hack":
                         if card[1] == "2" or card[1] == "3" or card[1] == "4" or card[1] == "5":
-                            on_played_triggers += 1
+                            if joker["active"]:
+                                on_played_triggers += 1
                     elif joker["name"] == "even_steven":
                         if self.identify_card(card)["value"] % 2 == 0:
                             multiplier += 4
@@ -410,13 +415,39 @@ class Algorithm:
                     elif joker["name"] == "ride_the_bus":
                         if face_card:
                             joker["value"] == 0
+                    elif joker["name"] == "photograph":
+                        if not joker["value"]:
+                            joker["value"] = True
+                            multiplier *= 2
+                    elif joker["name"] == "ancient_joker":
+                        if card[0] == joker["suit"]:
+                            multiplier *= 1.5
+                    elif joker["name"] == "walkie_talkie":
+                        if card[1] == 10 or card[1] == 4:
+                            value += 10
+                            multiplier += 4
+                    elif joker["name"] == "seltzer":
+                        if joker["active"]:
+                            on_played_triggers += 1
+                            joker["active"] = False
+                    elif joker["name"] == "smiley_face":
+                        if face_card:
+                            multiplier += 5
+                    elif joker["name"] == "sock_and_buskin":
+                        if face_card and joker["active"]:
+                            on_played_triggers += 1
+
                 on_played_triggers -= 1
 
-        # Joker logic here that are for "on hand" jokers
+        # Joker logic here that are for "on held" jokers
         for card in active_cards:
             for joker in self.jokers:
                 if joker["name"] == "raised_fist":
                     pass
+                elif joker["name"] == "baron":
+                    for card in non_active_hand:
+                        if card[0] == "H":
+                            multiplier *= 1.5
 
         # Joker logic here that are for "independent" jokers
         for joker in self.jokers:
@@ -506,7 +537,59 @@ class Algorithm:
                 if len(active_cards) + len(non_active_cards) == 4:
                     joker["value"] += 4
                 value += joker["value"]
-
+            elif joker["name"] == "hologram":
+                multiplier *= joker["value"]
+            elif joker["name"] == "obelisk":
+                top_hand = {}
+                for hand_type in self.hand_values:
+                    if hand_type["played"] > top_hand["played"]:
+                        top_hand = hand_type
+                if top_hand["name"] == hand_type:
+                    joker["value"] = 1
+                else:
+                    joker["value"] += 0.2
+                multiplier *= joker["value"]
+            elif joker["name"] == "erosion":
+                match self.deck:
+                    case "abondoned_deck":
+                        deck_difference = (40 - len(self.deck))
+                    case "checkered_deck":
+                        deck_difference = (26 - len(self.deck))
+                    case _:
+                        deck_difference = (52 - len(self.deck))
+                if deck_difference > 0:
+                    multiplier += deck_difference * 4
+            elif joker["name"] == "fortune_teller":
+                multiplier += joker["value"]
+            elif joker["name"] == "stone_joker":
+                for card in self.deck:
+                    if card[0] == "R":
+                        value += 25
+            elif joker["name"] == "lucky_cat":
+                multiplier *= joker["value"]
+            elif joker["name"] == "baseball_card":
+                for joker in self.jokers:
+                    if joker["rarirty"] == "U":
+                        multiplier *= 1.5
+            elif joker["name"] == "bull":
+                value += 2 * self.money
+            elif joker["name"] == "flash_card":
+                multiplier += joker["value"]
+            elif joker["name"] == "popcorn":
+                multiplier += joker["value"]
+            elif joker["name"] == "spare_trousers":
+                if hand_type == "pair":
+                    joker["value"] += 2
+                multiplier += joker["value"]
+            elif joker["name"] == "ramen":
+                multiplier *= joker["value"]
+            elif joker["name"] == "castle":
+                value += joker["value"]
+            elif joker["name"] == "campfire":
+                multiplier *= joker["value"]
+            elif joker["name"] == "acrobat":
+                if self.current_hands == 1:
+                    multiplier *= 3
             
                     
             

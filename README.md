@@ -130,46 +130,46 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] Riff-Raff
 - [] Vampire
 - [x] Shortcut (Need to add check for if joker)
-- [] Hologram
+- [x] Hologram
 - [] Vagabond
-- [] Baron
+- [x] Baron
 - [] Cloud 9
 - [] Rocket
-- [] Obelisk
+- [x] Obelisk
 - [] Midas Mask
 - [] Luchador
-- [] Photograph
+- [x] Photograph (Need to add set_false at begining of bind)
 - [] Gift Card
 - [] Turtle Bean
-- [] Erosion
+- [x] Erosion
 - [] Reserved Parking
 - [] Mail-In Rebate
 - [] To the Moon
 - [] Hallucination
-- [] Fortune Teller
+- [x] Fortune Teller
 - [] Juggler
 - [] Drunkard
-- [] Stone Joker
+- [x] Stone Joker
 - [] Golden Joker
-- [] Lucky Cat
-- [] Baseball Card
-- [] Bull
+- [x] Lucky Cat
+- [x] Baseball Card
+- [x] Bull
 - [] Diet Cola
 - [] Trading Card
-- [] Flash Card
-- [] Popcorn
-- [] Spare Trousers
-- [] Ancient Joker
-- [] Ramen
-- [] Walkie Talkie
-- [] Seltzer
-- [] Castle
-- [] Smiley Face
-- [] Campfire
+- [x] Flash Card
+- [x] Popcorn
+- [x] Spare Trousers
+- [x] Ancient Joker
+- [x] Ramen
+- [x] Walkie Talkie
+- [x] Seltzer
+- [x] Castle
+- [x] Smiley Face
+- [x] Campfire
 - [] Golden Ticket
 - [] Mr. Bones
-- [] Acrobat
-- [] Sock and Buskin
+- [x] Acrobat
+- [x] Sock and Buskin
 - [] Swashbuckler
 - [] Troubadour
 - [] Certificate
