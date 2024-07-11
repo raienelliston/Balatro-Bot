@@ -144,33 +144,73 @@ class Algorithm:
 def find_hand_value(self, hand):
     
     # Figures out hand type and active cards
-    values = [] * 5
-    suits = [] * 14
+    values = [0] * 5
+    suits = [0] * 14
     for card in hand:
         card = self.identify_card(card)
         values[card["value"]] += 1
         suits[card["suit"]] += 1
     
+    # Check if it's a flush at all
+    straight = False
+    for i in range(1, 10):
+        if suits[i] == 1 and suits[i + 1] == 1 and suits[i + 2] == 1 and suits[i + 3] == 1 and suits[i + 4] == 1:
+            straight = True
+
+    flush = False
+    if 5 in suits:
+        flush = True
+
     # Check for flush five
-
+    if flush and 5 in values:
+        active_cards = [hand]
+        hand_type = "flush_five"
     # Check for flush house
-
+    elif flush and 3 in values and 2 in values:
+        active_cards = [hand]
+        hand_type = "flush_house"
     # Check for five of a kind
-
+    elif 5 in values:
+        active_cards = [hand]
+        hand_type = "five_of_a_kind"
     # Check for straight flush
-
+    elif flush:
+        if straight:
+            active_cards = [hand]
+            hand_type = "straight_flush"
     # Check for four of a kind
-
-    # Check for full house
-
-    # Check for flush
-
+        elif 4 in values:
+            active_cards = [hand]
+            hand_type = "four_of_a_kind"
+    # Check for full house and flush
+        else:
+            active_cards = [hand]
+            hand_type = "flush"
+    elif 3 in values and 2 in values:
+        active_cards = [hand]
+        hand_type = "full_house"
     # Check for straight
-
+    elif straight:
+        active_cards = [hand]
+        hand_type = "straight"
     # Check for three of a kind
-
+    elif 3 in values:
+        active_cards = [hand]
+        hand_type = "three_of_a_kind"
     # Check for two pair
-
+    elif values.count(2) == 2:
+        active_cards = [hand]
+        hand_type = "two_pair"
     # Check for pair
-
+    elif 2 in values:
+        for card in hand:
+            hand.remove(card)
+            if card in hand:
+                active_cards = [card, card]
+        hand_type = "pair"
     # Check for high card
+    else:
+        high_card = hand[0]
+        for card in hand:
+            if 
+        hand_type = "high_card"
