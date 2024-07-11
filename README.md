@@ -62,32 +62,32 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 
 ### Jokers
 - [x] Joker
-- [] Greedy Joker
-- [] Lusty Joker
-- [] Wrathful Joker
-- [] Gluttonous Joker
-- [] Jolly Joker
-- [] Zany Joker
-- [] Mad Joker
-- [] Crazy Joker
-- [] Droll Joker
-- [] Sly Joker
-- [] Wily Joker
-- [] Clever Joker
-- [] Devious Joker
-- [] Crafty Joker
-- [] Half Joker
-- [] Joker Stencil
+- [x] Greedy Joker
+- [x] Lusty Joker
+- [x] Wrathful Joker
+- [x] Gluttonous Joker
+- [x] Jolly Joker
+- [x] Zany Joker
+- [x] Mad Joker
+- [x] Crazy Joker
+- [x] Droll Joker
+- [x] Sly Joker
+- [x] Wily Joker
+- [x] Clever Joker
+- [x] Devious Joker
+- [x] Crafty Joker
+- [x] Half Joker
+- [x] Joker Stencil
 - [] Four Fingers
-- [] Mime
+- [x] Mime
 - [] Credit Card
-- [] Ceremonial Dagger
-- [] Banner
-- [] Mystic Summit
+- [x] Ceremonial Dagger
+- [x] Banner
+- [x] Mystic Summit
 - [] Marble Joker
 - [] Loyalty Card
 - [] 8 Ball
-- [] Misprint
+- [x] Misprint
 - [] Dusk
 - [] Raised Fist
 - [] Chaos the Clown

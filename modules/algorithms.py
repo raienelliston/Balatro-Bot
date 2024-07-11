@@ -22,6 +22,8 @@ class Algorithm:
         self.hands = 4
         self.hand_size = 8
         self.discards = 4
+        self.current_hands = 4
+        self.current_discards = 4
         self.jokers = []
         self.max_jokers = 5
         self.consumables = []
@@ -189,7 +191,7 @@ class Algorithm:
         return best_hand
 
     def find_hand_value(self, hand):
-        print(hand)
+        # print(hand)
         # Figures out hand type and active cards
         values = [0] * 14
         suits = [0] * 5
@@ -324,20 +326,91 @@ class Algorithm:
                     pass
                 triggers -= 1
 
-            # Joker value logic here
-            for i in self.joker_counter['joker']:
-                value += 10
-                multiplier += 1
+            # Joker logic here that are for "on played" jokers
+            on_played_triggers = 1
+            while on_played_triggers > 0:
+                for joker in self.jokers:
+                    if joker["name"] == "greedy_joker":
+                        if card[0] == "D":
+                            multiplier += 3
+                    elif joker["name"] == "lustful_joker":
+                        if card[0] == "H":
+                            multiplier += 3
+                    elif joker["name"] == "wrathful_joker":
+                        if card[0] == "S":
+                            multiplier += 3
+                    elif joker["name"] == "gluttonous_joker":
+                        if card[0] == "C":
+                            multiplier += 3
+                    elif joker["name"] == "mime":
+                        on_played_triggers += 1
+                on_played_triggers -= 1
 
-        # Applies bonuses from joker editions and types
+        # Joker logic here that are for "on hand" jokers
+        for card in active_cards:
+            for joker in self.jokers:
+                if joker["name"] == "raised_fist":
+                    pass
+
+        # Joker logic here that are for "independent" jokers
         for joker in self.jokers:
-            match joker['edition']:
-                case "F":
-                    value += 50
-                case "H":
+            if joker["name"] == "joker":
+                multiplier += 4
+            elif joker["name"] == "jolly_joker":
+                if hand_type == "pair":
+                    multiplier += 8
+            elif joker["name"] == "zany_joker":
+                if hand_type == "three_of_a_kind":
+                    multiplier += 12
+            elif joker["name"] == "mad_joker":
+                if hand_type == "two_pair":
                     multiplier += 10
-                case "P":
-                    multiplier *= 1.5
+            elif joker["name"] == "crazy_joker":
+                if hand_type == "straight":
+                    multiplier += 12
+            elif joker["name"] == "droll_joker":
+                if hand_type == "flush":
+                    multiplier += 10
+            elif joker["name"] == "sly_joker":
+                if hand_type == "pair":
+                    value += 50
+            elif joker["name"] == "wily_joker":
+                if hand_type == "three_of_a_kind":
+                    value += 100
+            elif joker["name"] == "clever_joker":
+                if hand_type == "two_pair":
+                    value += 80
+            elif joker["name"] == "devious_joker":
+                if hand_type == "straight":
+                    value += 100
+            elif joker["name"] == "crafty_joker":
+                if hand_type == "flush":
+                    value += 80
+            elif joker["name"] == "half_joker":
+                if len(active_cards) >= 3:
+                    multiplier += 20
+            elif joker["name"] == "joker_stencil":
+                multiplier *= (self.max_jokers - len(self.jokers) + 1)
+            elif joker["name"] == "ceremonial_dagger":
+                multiplier += joker["value"]
+            elif joker["name"] == "banner":
+                value += self.current_discards * 30
+            elif joker["name"] == "mystic_summit":
+                if self.current_discards == 0:
+                    multiplier += 15
+            elif joker["name"] == "misprint":
+                multiplier += 11.5
+            
+
+        # # Applies bonuses from joker editions and types
+        # for joker in self.jokers:
+        #     match joker['edition']:
+        #         case "F":
+        #             value += 50
+        #         case "H":
+        #             multiplier += 10
+        #         case "P":
+        #             multiplier *= 1.5
                 
 
         return value * multiplier
