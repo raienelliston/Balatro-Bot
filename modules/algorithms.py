@@ -212,5 +212,59 @@ def find_hand_value(self, hand):
     else:
         high_card = hand[0]
         for card in hand:
-            if 
+            if self.identify_card(card)["value"] > self.identify_card(high_card)["value"]:
+                high_card = card
+        active_cards = [high_card]
         hand_type = "high_card"
+
+    for card in hand:
+        if card[0] == "R":
+            active_cards.append(card)
+
+    # Calculates the value of the hand
+    if type["name"] == hand_type:
+        value = type["value"]
+        multiplier = type["multiplier"]
+
+    
+    for card in active_cards:
+        triggers = 1
+        while triggers > 0:
+            # Initial value added
+            value += self.identify_card(card)["value"]
+            if card[0] == "R": #Stone Card
+                value += 50
+
+            try:
+                match card[2]: # Card Enchantments
+                    case "B": #Bonus Card
+                        value += 30
+                    case "M": #Mult Card
+                        multiplier += 4
+                    case "G": #Glass Card
+                        multiplier *= 2
+                    case "F": #Steel Card (F for Fe)
+                        multiplier *= 1.5
+            except IndexError:
+                pass
+
+            try:
+                match card[3]: # Card Editions
+                    case "F": #Foil Card
+                        value += 50
+                    case "H": #Holographic Card
+                        multiplier += 10
+                    case "P": #Polychrome Card
+                        multiplier *= 1.5
+            except IndexError:
+                pass
+
+            try:
+                match card[4]: # Card Seals
+                    case "R":
+                        triggers += 1
+            except IndexError:
+                pass
+            triggers -= 1
+
+        # Joker value logic here
