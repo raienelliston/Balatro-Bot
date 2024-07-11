@@ -3,3 +3,255 @@ Bot that is designed to beat the card gambling roguelike game by Playstick Games
 
 ## Seeds
 You can find seeds for Balatro from [here](https://balatroseeds.com/).
+
+## List of things to implement
+
+### Core
+- [x] Starting a run
+- [] Selecting a hand in a bind
+- [] Selecting cards to discard
+- [] Buying from the shop
+- [] Choosing items from packs
+- [] Selecting bind or tag
+
+### Card Types
+- [x] Regular Cards
+- [x] Bonus Card
+- [x] Mult Card
+- [] Wild Card
+- [x] Glass Card (Kinda)
+- [x] Steel Card
+- [x] Stone Card
+- [] Gold Card
+- [] Lucky Card
+- [x] Foil
+- [x] Holographic
+- [x] Polychrome
+- [] Negative
+- [] Gold Seal
+- [] Red Seal
+- [] Blue Seal
+- [] Purple Seal
+
+### Decks
+- [x] Red Deck
+- [x] Blue Deck
+- [x] Yellow Deck
+- [] Green Deck
+- [x] Black Deck
+- [x] Magic Deck
+- [x] Nebula Deck
+- [x] Ghost Deck
+- [x] Abandoned Deck
+- [x] Checkered Deck
+- [x] Zodiac Deck
+- [x] Painted Deck
+- [] Anaglyph Deck
+- [] Plasma Deck
+- [] Erratic Deck
+
+### Stakes
+- [x] White Stake
+- [] Red Stake
+- [] Green Stake
+- [] Black Stake
+- [] Blue Stake
+- [x] Purple Stake
+- [] Orange Stake
+- [] Gold Stake
+
+### Jokers
+- [] Joker
+- [] Greedy Joker
+- [] Lusty Joker
+- [] Wrathful Joker
+- [] Gluttonous Joker
+- [] Jolly Joker
+- [] Zany Joker
+- [] Mad Joker
+- [] Crazy Joker
+- [] Droll Joker
+- [] Sly Joker
+- [] Wily Joker
+- [] Clever Joker
+- [] Devious Joker
+- [] Crafty Joker
+- [] Half Joker
+- [] Joker Stencil
+- [] Four Fingers
+- [] Mime
+- [] Credit Card
+- [] Ceremonial Dagger
+- [] Banner
+- [] Mystic Summit
+- [] Marble Joker
+- [] Loyalty Card
+- [] 8 Ball
+- [] Misprint
+- [] Dusk
+- [] Raised Fist
+- [] Chaos the Clown
+- [] Fibonacci
+- [] Steel Joker
+- [] Scary Face
+- [] Abstract Joker
+- [] Delayed Gratification
+- [] Hack
+- [] Pareidolia
+- [] Gros Michel
+- [] Even Steven
+- [] Odd Todd
+- [] Scholar
+- [] Business Card
+- [] Supernova
+- [] Ride the Bus
+- [] Space Joker
+- [] Egg
+- [] Burglar
+- [] Blackboard
+- [] Runner
+- [] Ice Cream
+- [] DNA
+- [] Splash
+- [] Blue Joker
+- [] Sixth Sense
+- [] Constellation
+- [] Hiker
+- [] Faceless Joker
+- [] Green Joker
+- [] Superposition
+- [] To Do List
+- [] Cavendish
+- [] Card Sharp
+- [] Red Card
+- [] Madness
+- [] Square Joker
+- [] Séance
+- [] Riff-Raff
+- [] Vampire
+- [] Shortcut
+- [] Hologram
+- [] Vagabond
+- [] Baron
+- [] Cloud 9
+- [] Rocket
+- [] Obelisk
+- [] Midas Mask
+- [] Luchador
+- [] Photograph
+- [] Gift Card
+- [] Turtle Bean
+- [] Erosion
+- [] Reserved Parking
+- [] Mail-In Rebate
+- [] To the Moon
+- [] Hallucination
+- [] Fortune Teller
+- [] Juggler
+- [] Drunkard
+- [] Stone Joker
+- [] Golden Joker
+- [] Lucky Cat
+- [] Baseball Card
+- [] Bull
+- [] Diet Cola
+- [] Trading Card
+- [] Flash Card
+- [] Popcorn
+- [] Spare Trousers
+- [] Ancient Joker
+- [] Ramen
+- [] Walkie Talkie
+- [] Seltzer
+- [] Castle
+- [] Smiley Face
+- [] Campfire
+- [] Golden Ticket
+- [] Mr. Bones
+- [] Acrobat
+- [] Sock and Buskin
+- [] Swashbuckler
+- [] Troubadour
+- [] Certificate
+- [] Smeared Joker
+- [] Throwback
+- [] Hanging Chad
+- [] Rough Gem
+- [] Bloodstone
+- [] Arrowhead
+- [] Onyx Agate
+- [] Glass Joker
+- [] Showman
+- [] Flower Pot
+- [] Blueprint
+- [] Wee Joker
+- [] Merry Andy
+- [] Oops! All 6s
+- [] The Idol
+- [] Seeing Double
+- [] Matador
+- [] Hit the Road
+- [] The Duo
+- [] The Trio
+- [] The Family
+- [] The Order
+- [] The Tribe
+- [] Stuntman
+- [] Invisible Joker
+- [] Brainstorm
+- [] Satellite
+- [] Shoot the Moon
+- [] Driver's License
+- [] Cartomancer
+- [] Astronomer
+- [] Burnt Joker
+- [] Bootstraps
+- [] Canio
+- [] Triboulet
+- [] Yorick
+- [] Chicot
+- [] Perkeo
+
+### Tarot Cards
+- [] The Fool (0)
+- [] The Magician (I)
+- [] The High Priestess (II)
+- [] The Empress (III)
+- [] The Emperor (IV)
+- [] The Hierophant (V)
+- [] The Lovers (VI)
+- [] The Chariot (VII)
+- [] Justice (VIII)
+- [] The Hermit (IX)
+- [] The Wheel of Fortune (X)
+- [] Strength (XI)
+- [] The Hanged Man (XII)
+- [] Death (XIII)
+- [] Temperance (XIV)
+- [] The Devil (XV)
+- [] The Tower (XVI)
+- [] The Star (XVII)
+- [] The Moon (XVIII)
+- [] The Sun (XIX)
+- [] Judgement (XX)
+- [] The World (XXI)
+
+### Spectial Cards
+- [] Familiar
+- [] Grim
+- [] Incantation
+- [] Talisman
+- [] Aura
+- [] Wraith
+- [] Sigil
+- [] Ouija
+- [] Ectoplasm
+- [] Immolate
+- [] Ankh
+- [] Deja Vu
+- [] Hex
+- [] Trance
+- [] Medium
+- [] Cryptid
+- [] The Soul
+- [] Black Hole

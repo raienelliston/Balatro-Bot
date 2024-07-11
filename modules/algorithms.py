@@ -86,24 +86,24 @@ class Algorithm:
                 exit()
 
         # Handles the changes from the stake
-        if stake >= 5:
+        if stake_list.index(stake) >= 5:
             self.discards -= 1
 
     def identify_card(self, id):
         card = {}
         match id[0]:
             case "C":
-                card["suit"] = "1"
+                card["suit"] = 1
             case "D":
-                card["suit"] = "2"
+                card["suit"] = 2
             case "H":
-                card["suit"] = "3"
+                card["suit"] = 3
             case "S":
-                card["suit"] = "4"
+                card["suit"] = 4
             case "R":
-                card["suit"] = "0"
+                card["suit"] = 0
             case "W":
-                card["suit"] = "5"
+                card["suit"] = 5
         
         match id[1]:
             case "R":
@@ -139,132 +139,139 @@ class Algorithm:
 
         return best_hand
 
+    def find_hand_value(self, hand):
+        
+        # Figures out hand type and active cards
+        values = [0] * 14
+        suits = [0] * 5
+        for card in hand:
+            card = self.identify_card(card)
+            print(card)
+            values[card["value"]] += 1
+            suits[card["suit"]] += 1
+        
+        # Check if it's a flush at all
+        straight = False
+        for i in range(1, 10):
+            if suits[i] == 1 and suits[i + 1] == 1 and suits[i + 2] == 1 and suits[i + 3] == 1 and suits[i + 4] == 1:
+                straight = True
 
+        flush = False
+        if 5 in suits:
+            flush = True
 
-def find_hand_value(self, hand):
-    
-    # Figures out hand type and active cards
-    values = [0] * 5
-    suits = [0] * 14
-    for card in hand:
-        card = self.identify_card(card)
-        values[card["value"]] += 1
-        suits[card["suit"]] += 1
-    
-    # Check if it's a flush at all
-    straight = False
-    for i in range(1, 10):
-        if suits[i] == 1 and suits[i + 1] == 1 and suits[i + 2] == 1 and suits[i + 3] == 1 and suits[i + 4] == 1:
-            straight = True
-
-    flush = False
-    if 5 in suits:
-        flush = True
-
-    # Check for flush five
-    if flush and 5 in values:
-        active_cards = [hand]
-        hand_type = "flush_five"
-    # Check for flush house
-    elif flush and 3 in values and 2 in values:
-        active_cards = [hand]
-        hand_type = "flush_house"
-    # Check for five of a kind
-    elif 5 in values:
-        active_cards = [hand]
-        hand_type = "five_of_a_kind"
-    # Check for straight flush
-    elif flush:
-        if straight:
+        # Check for flush five
+        if flush and 5 in values:
             active_cards = [hand]
-            hand_type = "straight_flush"
-    # Check for four of a kind
-        elif 4 in values:
+            hand_type = "flush_five"
+        # Check for flush house
+        elif flush and 3 in values and 2 in values:
             active_cards = [hand]
-            hand_type = "four_of_a_kind"
-    # Check for full house and flush
+            hand_type = "flush_house"
+        # Check for five of a kind
+        elif 5 in values:
+            active_cards = [hand]
+            hand_type = "five_of_a_kind"
+        # Check for straight flush
+        elif flush:
+            if straight:
+                active_cards = [hand]
+                hand_type = "straight_flush"
+        # Check for four of a kind
+            elif 4 in values:
+                active_cards = [hand]
+                hand_type = "four_of_a_kind"
+        # Check for full house and flush
+            else:
+                active_cards = [hand]
+                hand_type = "flush"
+        elif 3 in values and 2 in values:
+            active_cards = [hand]
+            hand_type = "full_house"
+        # Check for straight
+        elif straight:
+            active_cards = [hand]
+            hand_type = "straight"
+        # Check for three of a kind
+        elif 3 in values:
+            active_cards = [hand]
+            hand_type = "three_of_a_kind"
+        # Check for two pair
+        elif values.count(2) == 2:
+            active_cards = [hand]
+            hand_type = "two_pair"
+        # Check for pair
+        elif 2 in values:
+            for card in hand:
+                hand.remove(card)
+                if card in hand:
+                    active_cards = [card, card]
+            hand_type = "pair"
+        # Check for high card
         else:
-            active_cards = [hand]
-            hand_type = "flush"
-    elif 3 in values and 2 in values:
-        active_cards = [hand]
-        hand_type = "full_house"
-    # Check for straight
-    elif straight:
-        active_cards = [hand]
-        hand_type = "straight"
-    # Check for three of a kind
-    elif 3 in values:
-        active_cards = [hand]
-        hand_type = "three_of_a_kind"
-    # Check for two pair
-    elif values.count(2) == 2:
-        active_cards = [hand]
-        hand_type = "two_pair"
-    # Check for pair
-    elif 2 in values:
+            high_card = hand[0]
+            for card in hand:
+                if self.identify_card(card)["value"] > self.identify_card(high_card)["value"]:
+                    high_card = card
+            active_cards = [high_card]
+            hand_type = "high_card"
+
         for card in hand:
-            hand.remove(card)
-            if card in hand:
-                active_cards = [card, card]
-        hand_type = "pair"
-    # Check for high card
-    else:
-        high_card = hand[0]
-        for card in hand:
-            if self.identify_card(card)["value"] > self.identify_card(high_card)["value"]:
-                high_card = card
-        active_cards = [high_card]
-        hand_type = "high_card"
+            if card[0] == "R":
+                active_cards.append(card)
 
-    for card in hand:
-        if card[0] == "R":
-            active_cards.append(card)
+        # Calculates the value of the hand
+        for type in self.hand_values:
+            if type["name"] == hand_type:
+                value = type["value"]
+                multiplier = type["multiplier"]
+        
 
-    # Calculates the value of the hand
-    if type["name"] == hand_type:
-        value = type["value"]
-        multiplier = type["multiplier"]
+        for card in active_cards:
+            triggers = 1
+            while triggers > 0:
+                # Initial value added
+                value += self.identify_card(card)["value"]
+                if card[0] == "R": #Stone Card
+                    value += 50
 
-    
-    for card in active_cards:
-        triggers = 1
-        while triggers > 0:
-            # Initial value added
-            value += self.identify_card(card)["value"]
-            if card[0] == "R": #Stone Card
-                value += 50
+                try:
+                    match card[2]: # Card Enchantments
+                        case "B": #Bonus Card
+                            value += 30
+                        case "M": #Mult Card
+                            multiplier += 4
+                        case "G": #Glass Card
+                            multiplier *= 2
+                        case "F": #Steel Card (F for Fe)
+                            multiplier *= 1.5
+                except IndexError:
+                    pass
 
-            try:
-                match card[2]: # Card Enchantments
-                    case "B": #Bonus Card
-                        value += 30
-                    case "M": #Mult Card
-                        multiplier += 4
-                    case "G": #Glass Card
-                        multiplier *= 2
-                    case "F": #Steel Card (F for Fe)
-                        multiplier *= 1.5
-            except IndexError:
-                pass
+                try:
+                    match card[3]: # Card Editions
+                        case "F": #Foil Card
+                            value += 50
+                        case "H": #Holographic Card
+                            multiplier += 10
+                        case "P": #Polychrome Card
+                            multiplier *= 1.5
+                except IndexError:
+                    pass
 
-            try:
-                match card[3]: # Card Editions
-                    case "F": #Foil Card
-                        value += 50
-                    case "H": #Holographic Card
-                        multiplier += 10
-                    case "P": #Polychrome Card
-                        multiplier *= 1.5
-            except IndexError:
-                pass
+                try:
+                    match card[4]: # Card Seals
+                        case "R":
+                            triggers += 1
+                except IndexError:
+                    pass
+                triggers -= 1
 
-            try:
-                match card[4]: # Card Seals
-                    case "R":
-                        triggers += 1
-            except IndexError:
-                pass
-            triggers -= 1
+            # Joker value logic here
+        return value * multiplier
 
-        # Joker value logic here
+
+
+if __name__ == "__main__":
+    algo = Algorithm("red_deck", "red_stake", None)
+    print(algo.find_best_hand(["CA", "C5", "D3", "D3", "H3", "H3", "S3", "S3"]))
