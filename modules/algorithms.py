@@ -124,7 +124,7 @@ class Algorithm:
         return card
     
     # Iterates through
-    def find_best_hand(self, hand):
+    def find_best_hand(self, hand, goal=None):
         value = 0
         multiplier = 1
         best_hand = {
@@ -189,7 +189,17 @@ class Algorithm:
         #         #     best_hand["value"] = hand_value
                 #     best_hand["hand"] = hand
 
-        return best_hand
+        hand_numbers = []
+        for card in hand:
+            if card in best_hand["hand"]:
+                index = best_hand["hand"].index(card)
+                hand_numbers.append(hand.index(card))
+                best_hand["hand"].pop(index)
+        
+        return {
+            "hand": hand_numbers,
+            "value": best_hand["value"]
+        }
 
     def find_hand_value(self, hand):
         # print(hand)
@@ -224,9 +234,6 @@ class Algorithm:
                             offset += 1
                         else:
                             check = False
-
-
-
 
         flush = False
         if 5 in suits:
@@ -687,6 +694,25 @@ class Algorithm:
                 
 
         return value * multiplier
+
+    def handle_bind(self, bind_data):
+        current_score = bind_data["current_score"]
+        bind_amount = bind_data["bind_amount"]
+
+        goal = bind_amount - current_score
+
+        best_hand = self.find_best_hand(self.current_deck, goal)
+
+        if best_hand["value"] >= goal:
+            return {
+                "action": "play",
+                "hand": best_hand["hand"]
+            }
+        
+        # Now check if the hand is a better option then the potential discards
+
+
+
 
 
 

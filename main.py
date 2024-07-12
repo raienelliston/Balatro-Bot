@@ -11,7 +11,7 @@ def main():
     isDone = False
     controller = gc.Controller()
     state = "in_game"
-    alg.Algorithm(run_deck, stake, controller)
+    algorithm = alg.Algorithm(run_deck, stake, controller)
 
     # Main Loop
     while not isDone:
@@ -69,8 +69,27 @@ def main():
                         print("In Bind")
 
 
-                        bind_data = controller.handle_bind()
+                        bind_data = controller.get_bind_data()
                         print(bind_data)
+
+                        action = algorithm.handle_bind(bind_data)
+                        print(action)
+
+                        match action["type"]:
+                            case "play":
+                                for card in action["cards"]:
+                                    controller.select_card(card, "bind")
+                                controller.click(850, 975)
+                            case "discard":
+                                for card in action["cards"]:
+                                    controller.select_card(card, "hand_bind")
+                                controller.click(1250, 975)
+                            case "comsume":
+                                pass
+                            case _:
+                                print("Unknown Action")
+                                pass
+
                     case "shop":
                         print("Shop")
                     case _:

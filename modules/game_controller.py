@@ -188,7 +188,6 @@ class Controller:
         text = self.read_text((1012, 862, 1076, 893))
         text = text.replace("/", " ")
         text = text.replace("\n", "")
-        text = text.split(" ")
         print(text)
 
         hand_size = int(text[-1])
@@ -285,10 +284,12 @@ class Controller:
         return hand
 
 
-    def handle_bind(self):
+    def get_bind_data(self):
         info = self.analyze_in_bind()
         self.hand = self.identify_hand(info["hand_size"])
         info["hand"] = self.hand
+
+    
 
 
 if __name__ == "__main__":
