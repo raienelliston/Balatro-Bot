@@ -204,6 +204,7 @@ class Algorithm:
 
     def find_hand_value(self, hand):
         print(hand)
+        money = 0
         # Figures out hand type and active cards
         values = [0] * 14
         suits = [0] * 5
@@ -376,7 +377,9 @@ class Algorithm:
 
             if card[1] == "J" or card[1] == "Q" or card[1] == "K":
                 face_card = True
-            # Add if pareidolia joker, face value == true
+            for jokers in self.jokers:
+                if joker["name"] == "pareidolia":
+                    face_card = True
 
             # Joker logic here that are for "on played" jokers
             on_played_triggers = 1
@@ -463,6 +466,9 @@ class Algorithm:
                     elif joker["name"] == "triboulet":
                         if card[1] == "K" or card[1] == "Q":
                             multiplier *= 2
+                    elif joker["name"] == "buisness_card":
+                        if face_card:
+                            money += 1
 
                 on_played_triggers -= 1
 
@@ -677,6 +683,16 @@ class Algorithm:
                 multiplier *= joker["value"]
             elif joker["name"] == "yorick":
                 multiplier *= joker["value"]
+            elif joker["name"] == "loyalty_card":
+                if joker["value"] == 0:
+                    multiplier *= 4
+            elif joker["name"] == "blackboard":
+                check = True
+                for card in active_cards["hand"] + non_active_cards["hand"]:
+                    if card[0] != "C" and card[0] != "S" and card[0] != "M":
+                        check = False
+                if check:
+                    multiplier *= 3
             
             
                     
@@ -698,6 +714,9 @@ class Algorithm:
 
     def pre_bind_logic(self, bind_data):
         
+        self.current_discards = bind_data["current_discards"]
+        self.current_hands = bind_data["current_hands"]
+
         offset = 0
         for index, joker in enumerate(self.jokers):
             if joker["name"] == "ceremonial_dagger":
@@ -710,13 +729,92 @@ class Algorithm:
             elif joker["name"] == "burglar":
                 self.current_discards = 0
                 self.current_hands += 3
+            elif joker["name"] == "card_sharp":
+                self.jokers[index - offset]["value"] = 0
+            elif joker["name"] == "madness":
+                self.jokers[index - offset]["value"] += 0.5
+            elif joker["name"] == "turtle_bean":
+                self.jokers[index - offset]["value"] -= 1
             
             
     def pre_hand_logic(self, hand):
-        pass
+        
+        for joker in self.jokers:
+            match joker["name"]:
+                case "juggler":
+                    pass
+                case _:
+                    pass
 
     def post_hand_logic(self, hand):
-        pass
+            
+        offset = 0
+        for index, joker in enumerate(self.jokers):
+            match joker["name"]:
+                case "loyalty_card":
+                    self.jokers[index- offset]["value"] -= 1
+                    if self.jokers[index- offset]["value"] < 0:
+                        self.jokers[index- offset]["value"] = 5
+                case "ice_cream":
+                    self.jokers[index]["value"] -= 5
+                    if self.jokers[index - offset]["value"] <= 0:
+                        self.jokers.pop(index- offset)
+                        offset += 1
+                case _:
+                    pass
+                
+
+
+    def post_bind_logic(self, bind_data):
+        
+        for index, joker in enumerate(self.jokers):
+            match joker["name"]:
+                case "delayed_gratification":
+                    if self.current_discards == self.discards:
+                        self.money += 2 * self.current_discards
+                case "egg":
+                    self.jokers[index]["sell_value"] += 3
+                case "rocket":
+                    self.money += self.jokers[index]["value"]
+                    if bind_data["bind_type"] == "boss":
+                        self.jokers[index]["value"] += 2
+                case _:
+                    pass
+
+    def handle_discard(self, discard_values, hand):
+
+        for joker in self.jokers:
+            match joker["name"]:
+                case "faceless_joker":
+                    pass
+                case _:
+                    pass
+
+
+    def get_hands(self):
+        self.current_hands = self.hands
+
+        for joker in self.jokers:
+            match joker["name"]:
+                case "juggler":
+                    self.current_hands += 1
+                case _:
+                    pass
+
+    def get_discards(self):
+        self.current_discards = self.discards
+
+        for joker in self.jokers:
+            match joker["name"]:
+                case "drunkard":
+                    self.current_discards += 1
+                case _:
+                    pass
+
+    def aquire_joker(self, joker):
+        match joker:
+            case "turtle_bean":
+                self.jokers.append({"name": joker, "value": 5, "sell_value": 3})
 
     def handle_bind(self, bind_data):
         current_score = bind_data["current_score"]

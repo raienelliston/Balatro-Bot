@@ -85,7 +85,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] Banner
 - [x] Mystic Summit
 - [x] Marble Joker
-- [] Loyalty Card
+- [x] Loyalty Card
 - [] 8 Ball
 - [x] Misprint
 - [x] Dusk
@@ -95,20 +95,20 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] Steel Joker
 - [x] Scary Face
 - [x] Abstract Joker
-- [] Delayed Gratification
+- [x] Delayed Gratification
 - [x] Hack
-- [] Pareidolia
+- [x] Pareidolia
 - [x] Gros Michel
 - [x] Even Steven
 - [x] Odd Todd
 - [x] Scholar
-- [] Business Card
+- [x] Business Card
 - [x] Supernova
 - [x] Ride the Bus
 - [] Space Joker
-- [] Egg
+- [x] Egg
 - [x] Burglar
-- [] Blackboard
+- [x] Blackboard
 - [x] Runner
 - [x] Ice Cream
 - [] DNA
@@ -147,8 +147,8 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] To the Moon
 - [] Hallucination
 - [x] Fortune Teller
-- [] Juggler
-- [] Drunkard
+- [x] Juggler
+- [x] Drunkard
 - [x] Stone Joker
 - [] Golden Joker
 - [x] Lucky Cat
