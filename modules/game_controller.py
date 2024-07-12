@@ -13,9 +13,10 @@ required_settings = [
 default_settings = {
     "window_name": "Balatro",
     "resolution": { 
-        "width": 1920,
-        "height": 1080
-    }
+        "width": 2544,
+        "height": 1431
+    },
+    "window_bar": True
 }
 
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
@@ -165,13 +166,17 @@ class Controller:
         if not absolute:
             width = area[2] - area[0]
             height = area[3] - area[1]
-            width = int(self.balatro.width / self.width * width)
-            height = int(self.balatro.height / self.height * height)
+            width = int(self.balatro.width / 1920 * width)
+            height = int(self.balatro.height / 1080 * height)
             print(width, height)
-            area = (int(self.balatro.width / self.width * area[0]), int(self.balatro.height / self.height * area[1]), width, height)
+            print("asldkfjasdf")
+            print(int(self.balatro.width / 1920 * area[0]), int(self.balatro.height / 1080 * area[1]), width, height)
+
+            area = (int(self.balatro.width / 1920 * area[0]), int(self.balatro.height / 1080 * area[1]), width, height)
+
         print(area)
         
-        screenshot = pag.screenshot(region=(area[0], area[1], area[2] - area[0], area[3] - area[1]))
+        screenshot = pag.screenshot(region=area)
         screenshot.save("screenshot.png")
         text = pytesseract.image_to_string(screenshot, lang='eng', config='--psm 6')
         return text
@@ -180,10 +185,11 @@ class Controller:
         
         # Check for the current bind amount
         
-        text = self.read_text((256, 256, 484, 314))
+        text = self.read_text((256, 231, 484, 286))
         print(text)
         text = text.replace("\n", "")
         text = text.replace("%", "")
+        text = text.replace("Y", "4")
 
         bind_amount = int(text.split(" ")[-1]) #Idk how to deal with e numbers
 
@@ -192,7 +198,7 @@ class Controller:
 
         # Check for the current round score
 
-        text = self.read_text((236, 422, 488, 478))
+        text = self.read_text((236, 400, 488, 455))
         print(text)
 
         text = text.split(" ")[-1]
@@ -220,7 +226,7 @@ class Controller:
 
         # Check deck size/amount
 
-        text = self.read_text((1649, 1013, 1724, 1044))
+        text = self.read_text((1649, 1013, 1774, 1054))
 
         print(text)
         text = text.replace("/", " ")
@@ -247,7 +253,7 @@ class Controller:
 
     def identify_hand(self, hand_size):
 
-        check_area = (505, 358, 1620, 654)
+        check_area = (int(self.balatro.width / 1920 * 505), int(self.balatro.width / 1920 * 358), int(self.balatro.width / 1920 * 1620), int(self.balatro.width / 1920 * 644))
 
         # 546, 778
         #1542, 778
