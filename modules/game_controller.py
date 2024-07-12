@@ -128,9 +128,16 @@ class Controller:
         x = self.balatro.left + x
         y = self.balatro.top + y
 
-        pag.moveTo(x, y)
-        # Commented for testing purposes
         pag.click(x, y) 
+
+    def move_mouse(self, x, y, absolute=False):
+        if not absolute:
+            x = self.balatro.width / 1920 * x
+            y = self.balatro.height / 1080 * y
+        x = self.balatro.left + x
+        y = self.balatro.top + y
+
+        pag.moveTo(x, y)
     
     def resize_window(self, width, height):
         self.balatro.resizeTo(width, height)
@@ -204,8 +211,63 @@ class Controller:
         if deck_size > deck_amount:
             deck_size = deck_size / 10
 
+    def identify_hand(self, hand_size):
+
+        check_area = (518, 358, 1620, 654)
+
+        # 546, 778
+        #1542, 778
+        farthest_distance = 1542 - 546
+        interval = farthest_distance / hand_size
+        start = 546
+        hand = []
+        for i in range(hand_size):
+            card = ["", "N", "N", "N"]
+            
+            self.move_mouse(start + interval * i, 778)
+            
+            screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
+            screenshot.save("screenshot.png")
+
+            for f in os.listdir("openCVData/cards"):
+                img = cv.imread("openCVData/cards/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > 0.8:
+                    card[0] = f
+                    break
+
+            for f in os.listdir("openCVData/enchantments"):
+                img = cv.imread("openCVData/enchantments/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > 0.8:
+                    card[1] = f
+                    break
+
+            for f in os.listdir("openCVData/editions"):
+                img = cv.imread("openCVData/editions/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > 0.8:
+                    card[2] = f
+                    break
+            
+            for f in os.listdir("openCVData/seals"):
+                img = cv.imread("openCVData/seals/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > 0.8:
+                    card[2] = f
+                    break
+
+            card = str(card[0]) + str(card[1]) + str(card[2]) + str(card[3])
+            hand.append(card)
+
+
     def handle_bind(self):
         self.analyze_in_bind(self.get_screenshot())
+
 
 
 if __name__ == "__main__":
