@@ -1,6 +1,7 @@
 import pygetwindow as gw
 import pyautogui as pag
 import pytesseract
+import keyboard
 import time
 # from modules.logger import Logger
 import cv2 as cv
@@ -123,17 +124,19 @@ class Controller:
         if area == None:
             area = (0, 0, self.balatro.width, self.balatro.height)
 
-    def select_cards(self, hand, type, click=False):
-        if click:
-            action = self.click
-        else:
-            action = self.move_mouse
+    def select_cards(self, hand, type, click=False, hand_size=0):
+        
         match type:
             case "hand_bind":
                 start = 546
-                interval = 978 / (len(hand) + 1)
+                interval = 978 / hand_size
                 for i in range(len(hand)):
-                    action(start + interval * (i + 0.5), 778)
+                    self.move_mouse(start + interval * (i + 0.5), 778)
+                    if click:
+                        self.click(start + interval * (i + 0.5), 778)
+                    print(hand[i])
+                    while not keyboard.is_pressed("q"):
+                        pass
 
     def click(self, x, y, absolute=False):
         # Changes the coordinats to account for different window sizes and locations
@@ -264,7 +267,7 @@ class Controller:
         print(hand_size)
         for i in range(hand_size):
         # for i in range(1):
-            card = ["", "N", "N", "N"]
+            card = ["", "", "N", "N", "N"]
             
             self.move_mouse(start + interval * (i + 0.5), 778)
             time.sleep(0.4)
@@ -272,22 +275,31 @@ class Controller:
             screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
             screenshot.save("screenshot.png")
 
+
             best = ["", 0]
-            for f in os.listdir("openCVData/cards"):
-                img = cv.imread("openCVData/cards/" + f, 0)
+            for f in os.listdir("openCVData/suits"):
+                img = cv.imread("openCVData/suits/" + f, 0)
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
                 if result > best[1]:
                     best = [f[:-4], result]
-            if card[0] == "":
-                card[0] = best[0]
+            card[0] = best[0]
+
+            best = ["", 0]
+            for f in os.listdir("openCVData/values"):
+                img = cv.imread("openCVData/values/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > best[1]:
+                    best = [f[:-4], result]
+            card[1] = best[0]
 
             for f in os.listdir("openCVData/enchantments"):
                 img = cv.imread("openCVData/enchantments/" + f, 0)
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
                 if result > 0.85:
-                    card[1] = f[:-4]
+                    card[2] = f[:-4]
                     break
 
             for f in os.listdir("openCVData/editions"):
@@ -295,7 +307,7 @@ class Controller:
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
                 if result > 0.85:
-                    card[2] = f[:-4]
+                    card[3] = f[:-4]
                     break
             
             for f in os.listdir("openCVData/seals"):
@@ -303,10 +315,10 @@ class Controller:
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
                 if result > 0.85:
-                    card[2] = f[:-4]
+                    card[4] = f[:-4]
                     break
 
-            card = str(card[0]) + str(card[1]) + str(card[2]) + str(card[3])
+            card = str(card[0]) + str(card[1]) + str(card[2]) + str(card[3] + str(card[4]))
             hand.append(card)
         print(hand)
         return hand
@@ -320,6 +332,7 @@ class Controller:
             "bind_amount": info["bind_amount"],
             "current_score": info["current_score"],
             "hand": info["hand"],
+            "hand_size": info["hand_size"],
         }
 
 

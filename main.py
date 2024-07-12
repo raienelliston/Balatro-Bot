@@ -71,25 +71,28 @@ def main():
                     case "in_bind":
                         print("In Bind")
 
+                        try:
+                            bind_data = controller.get_bind_data()
+                            print(bind_data)
 
-                        bind_data = controller.get_bind_data()
-                        print(bind_data)
+                            action = algorithm.handle_bind(bind_data)
+                            print(action)
+                            match action["action"]:
+                                case "play":
+                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=bind_data["hand_size"])
+                                    # controller.click(1250, 975)
+                                case "discard":
+                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=bind_data["hand_size"])
+                                    controller.click(1250, 975)
+                                case "comsume":
+                                    pass
+                                case _:
+                                    print("Unknown Action")
+                                    pass
+                        except Exception as e:
+                            print("Error getting bind data")
+                            print(e)
 
-                        action = algorithm.handle_bind(bind_data)
-                        print(action)
-
-                        match action["action"]:
-                            case "play":
-                                controller.select_cards(action["hand"], "hand_bind", click=True)
-                                # controller.click(1250, 975)
-                            case "discard":
-                                controller.select_cards(action["hand"], "hand_bind", click=True)
-                                controller.click(1250, 975)
-                            case "comsume":
-                                pass
-                            case _:
-                                print("Unknown Action")
-                                pass
 
                     case "shop":
                         print("Shop")
