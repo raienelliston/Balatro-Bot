@@ -84,7 +84,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] Ceremonial Dagger
 - [x] Banner
 - [x] Mystic Summit
-- [] Marble Joker
+- [x] Marble Joker
 - [] Loyalty Card
 - [] 8 Ball
 - [x] Misprint
@@ -107,7 +107,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] Ride the Bus
 - [] Space Joker
 - [] Egg
-- [] Burglar
+- [x] Burglar
 - [] Blackboard
 - [x] Runner
 - [x] Ice Cream

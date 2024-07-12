@@ -696,6 +696,28 @@ class Algorithm:
 
         return value * multiplier
 
+    def pre_bind_logic(self, bind_data):
+        
+        offset = 0
+        for index, joker in enumerate(self.jokers):
+            if joker["name"] == "ceremonial_dagger":
+                if len(self.jokers > index - offset):
+                    self.jokers[index - offset]["value"] += self.jokers[index + 1 - offset]["sell_value"]
+                    self.jokers.pop(index + 1 - offset)
+                    offset += 1
+            elif joker["name"] == "marble_joker":
+                self.deck.append("RR")
+            elif joker["name"] == "burglar":
+                self.current_discards = 0
+                self.current_hands += 3
+            
+            
+    def pre_hand_logic(self, hand):
+        pass
+
+    def post_hand_logic(self, hand):
+        pass
+
     def handle_bind(self, bind_data):
         current_score = bind_data["current_score"]
         bind_amount = bind_data["bind_amount"]
