@@ -702,7 +702,7 @@ class Algorithm:
         goal = bind_amount - current_score
 
         best_hand = self.find_best_hand(bind_data["hand"], goal)
-
+        print(best_hand)
         if best_hand["value"] >= goal:
             return {
                 "action": "play",

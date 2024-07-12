@@ -36,6 +36,9 @@ class Controller:
 
         self.settings = default_settings
 
+        self.width = self.settings["resolution"]["width"]
+        self.height = self.settings["resolution"]["height"]
+
         # logger = Logger()
 
         # Setup Settings
@@ -134,8 +137,8 @@ class Controller:
     def click(self, x, y, absolute=False):
         # Changes the coordinats to account for different window sizes and locations
         if not absolute:
-            x = self.balatro.width / 1920 * x
-            y = self.balatro.height / 1080 * y
+            x = self.balatro.width / self.width * x
+            y = self.balatro.height / self.height * y
         x = self.balatro.left + x
         y = self.balatro.top + y
 
@@ -160,7 +163,12 @@ class Controller:
         if area == None:
             area = (0, 0, self.balatro.width, self.balatro.height)
         if not absolute:
-            area = (int(self.balatro.width / 1920 * area[0]), int(self.balatro.height / 1080 * area[1]), int(self.balatro.width / 1920 * area[2]), int(self.balatro.height / 1080 * area[3]))
+            width = area[2] - area[0]
+            height = area[3] - area[1]
+            width = int(self.balatro.width / self.width * width)
+            height = int(self.balatro.height / self.height * height)
+            print(width, height)
+            area = (int(self.balatro.width / self.width * area[0]), int(self.balatro.height / self.height * area[1]), width, height)
         print(area)
         
         screenshot = pag.screenshot(region=(area[0], area[1], area[2] - area[0], area[3] - area[1]))
@@ -171,8 +179,9 @@ class Controller:
     def analyze_in_bind(self):
         
         # Check for the current bind amount
+        
         text = self.read_text((256, 256, 484, 314))
-
+        print(text)
         text = text.replace("\n", "")
         text = text.replace("%", "")
 
@@ -184,6 +193,7 @@ class Controller:
         # Check for the current round score
 
         text = self.read_text((236, 422, 488, 478))
+        print(text)
 
         text = text.split(" ")[-1]
         text = text.replace("#", "")
