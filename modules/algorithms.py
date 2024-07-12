@@ -202,7 +202,7 @@ class Algorithm:
         }
 
     def find_hand_value(self, hand):
-        # print(hand)
+        print(hand)
         # Figures out hand type and active cards
         values = [0] * 14
         suits = [0] * 5
@@ -701,7 +701,7 @@ class Algorithm:
 
         goal = bind_amount - current_score
 
-        best_hand = self.find_best_hand(self.current_deck, goal)
+        best_hand = self.find_best_hand(bind_data["hand"], goal)
 
         if best_hand["value"] >= goal:
             return {
@@ -709,6 +709,10 @@ class Algorithm:
                 "hand": best_hand["hand"]
             }
         
+        return {
+            "action": "play",
+            "hand": best_hand["hand"]
+        }
         # Now check if the hand is a better option then the potential discards
 
 

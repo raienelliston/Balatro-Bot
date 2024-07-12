@@ -119,7 +119,17 @@ class Controller:
         if area == None:
             area = (0, 0, self.balatro.width, self.balatro.height)
 
-        
+    def select_cards(self, hand, type, click=False):
+        if click:
+            action = self.click
+        else:
+            action = self.move_mouse
+        match type:
+            case "hand_bind":
+                start = 546
+                interval = 978 / (len(hand) + 1)
+                for i in range(len(hand)):
+                    action(start + interval * (i + 0.5), 778)
 
     def click(self, x, y, absolute=False):
         # Changes the coordinats to account for different window sizes and locations
@@ -179,6 +189,8 @@ class Controller:
         text = text.replace("#", "")
         text = text.replace("\n", "")
         text = text.replace("*", "")
+        if not text[0].isnumeric():
+            text = text[1:]
         current_score = int(text)
 
         print(current_score)
@@ -238,7 +250,7 @@ class Controller:
         # for i in range(1):
             card = ["", "N", "N", "N"]
             
-            self.move_mouse(start + interval * i, 778)
+            self.move_mouse(start + interval * (i + 0.5), 778)
             time.sleep(0.4)
 
             screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
@@ -288,8 +300,13 @@ class Controller:
         info = self.analyze_in_bind()
         self.hand = self.identify_hand(info["hand_size"])
         info["hand"] = self.hand
+        return {
+            "bind_amount": info["bind_amount"],
+            "current_score": info["current_score"],
+            "hand": info["hand"],
+        }
 
-    
+
 
 
 if __name__ == "__main__":

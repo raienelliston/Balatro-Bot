@@ -61,10 +61,13 @@ def main():
                 match controller.find_closest_match(screenshot, "screen_type", "openCVData/screens"):
                     case "blind_select_small":
                         print("Bind Selection")
+                        controller.click(700, 385)
                     case "blind_select_big":
                         print("Bind Selection")
+                        controller.click(1040, 385)
                     case "blind_select_boss":
                         print("Bind Selection")
+                        controller.click(1390, 385)
                     case "in_bind":
                         print("In Bind")
 
@@ -75,14 +78,12 @@ def main():
                         action = algorithm.handle_bind(bind_data)
                         print(action)
 
-                        match action["type"]:
+                        match action["action"]:
                             case "play":
-                                for card in action["cards"]:
-                                    controller.select_card(card, "bind")
-                                controller.click(850, 975)
+                                controller.select_cards(action["hand"], "hand_bind", click=True)
+                                # controller.click(1250, 975)
                             case "discard":
-                                for card in action["cards"]:
-                                    controller.select_card(card, "hand_bind")
+                                controller.select_cards(action["hand"], "hand_bind", click=True)
                                 controller.click(1250, 975)
                             case "comsume":
                                 pass
