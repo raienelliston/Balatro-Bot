@@ -144,26 +144,68 @@ class Controller:
         if not absolute:
             area = (int(self.balatro.width / 1920 * area[0]), int(self.balatro.height / 1080 * area[1]), int(self.balatro.width / 1920 * area[2]), int(self.balatro.height / 1080 * area[3]))
         print(area)
-        screenshot = pag.screenshot(region=area)
+        
+        screenshot = pag.screenshot(region=(area[0], area[1], area[2] - area[0], area[3] - area[1]))
+        screenshot.save("screenshot.png")
         text = pytesseract.image_to_string(screenshot, lang='eng', config='--psm 6')
         return text
     
     def analyze_in_bind(self, screenshot):
         
         # Check for the current bind amount
-        bind_amount = self.read_text((256, 256, 484, 314))
+        text = self.read_text((256, 256, 484, 314))
+
+        bind_amount = int(text.split(" ")[-1]) #Idk how to deal with e numbers
+
         print(bind_amount)
 
 
         # Check for the current round score
 
+        text = self.read_text((236, 422, 488, 478))
+
+        text = text.split(" ")[-1]
+        text = text.replace("#", "")
+        text = text.replace("\n", "")
+        text = text.replace("*", "")
+        current_score = int(text)
+
+        print(current_score)
+
         # Check hand size/amount
+
+        text = self.read_text((1012, 862, 1076, 893))
+        text = text.replace("/", " ")
+        text = text.replace("\n", "")
+        text = text.split(" ")
+        print(text)
+
+        hand_size = int(text[-1])
+        hand_amount = int(text[0])
+
+        print(hand_size)
+        print(hand_amount)
 
         # Check deck size/amount
 
-        # Check hands left
+        text = self.read_text((1649, 1013, 1724, 1044))
 
-        # Check discards left
+        print(text)
+        text = text.replace("/", " ")
+        text = text.replace("\n", "")
+        text = text.replace("y", "4")
+        text = text.replace("Y", "4")
+        text = text.split(" ")
+        print(text)
+
+        deck_size = int(text[-1])
+        deck_amount = int(text[0])
+
+        if deck_size > deck_amount:
+            deck_size = deck_size / 10
+
+    def handle_bind(self):
+        self.analyze_in_bind(self.get_screenshot())
 
 
 if __name__ == "__main__":
