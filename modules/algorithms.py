@@ -188,13 +188,14 @@ class Algorithm:
         #         # if hand_value > best_hand["value"]:
         #         #     best_hand["value"] = hand_value
                 #     best_hand["hand"] = hand
-
+        print(best_hand)
         hand_numbers = []
-        for card in hand:
-            if card in best_hand["hand"]:
-                index = best_hand["hand"].index(card)
-                hand_numbers.append(hand.index(card))
-                best_hand["hand"].pop(index)
+        for card in best_hand["hand"]:
+            for index, hand_card in enumerate(hand):
+                if card == hand_card:
+                    hand_numbers.append(index)
+                    break
+                
         
         return {
             "hand": hand_numbers,

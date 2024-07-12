@@ -132,11 +132,11 @@ class Controller:
                 interval = 978 / hand_size
                 start += interval / 2
                 for i in hand:
-                    print(start + interval * (i + 0.5))
+                    print(hand, i)
                     self.move_mouse(start + interval * i, 778)
                     if click:
                         self.click(start + interval * i, 778)
-                    print(hand[i])
+                    print(i)
 
     def click(self, x, y, absolute=False):
         # Changes the coordinats to account for different window sizes and locations
@@ -245,13 +245,38 @@ class Controller:
         if deck_size > deck_amount:
             deck_size = deck_size / 10
 
+        text = self.read((523, 273, 576, 301))
+        text = text.replace("\n", "")
+        text = text.replace("Y", "4")
+        text = text.replace("y", "4")
+        text = text.replace("/", " ")
+        text = text.split(" ")
+
+        joker_amount = int(text[0])
+        joker_limit = int(text[-1])
+
+        text = self.read((1714, 277, 1776, 306))
+
+        text = text.replace("\n", "")
+        text = text.replace("Y", "4")
+        text = text.replace("y", "4")
+        text = text.replace("/", " ")
+        text = text.split(" ")
+
+        consumable_amount = int(text[0])
+        consumable_limit = int(text[-1])
+
         return {
             "bind_amount": bind_amount,
             "current_score": current_score,
             "hand_size": hand_size,
             "hand_amount": hand_amount,
             "deck_size": deck_size,
-            "deck_amount": deck_amount
+            "deck_amount": deck_amount,
+            "joker_amount": joker_amount,
+            "joker_limit": joker_limit,
+            "consumable_amount": consumable_amount,
+            "consumable_limit": consumable_limit
         }
 
     def identify_hand(self, hand_size):
@@ -323,10 +348,53 @@ class Controller:
         print(hand)
         return hand
 
+    def identify_jokers(self, joker_amount):
+        check_area = (int(self.balatro.width / 1920 * 505), int(self.balatro.width / 1920 * 358), int(self.balatro.width / 1920 * 1620), int(self.balatro.width / 1920 * 644))
+        start = 0
+        end = 0
+        interval = (end - start) / joker_amount
+
+        jokers = []
+        for i in len(joker_amount):
+            joker = {
+                "name": "",
+                "enchantment": "",
+                "value": 1
+            }
+
+            self.move_mouse(start + interval * (i + 0.5), 778)
+            time.sleep(0.07)
+
+            screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
+            screenshot.save("screenshot.png")
+
+            best = ["", 0]
+            for f in os.listdir("openCVData/jokers"):
+                img = cv.imread("openCVData/jokers/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > best[1]:
+                    best = [f[:-4], result]
+            joker["name"] = best[0]
+
+            for f in os.listdir("openCVData/joker_enchantments"):
+                img = cv.imread("openCVData/joker_enchantments/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > 0.85:
+                    joker[1] = f[:-4]
+                    break
+            joker["enchantment"] = f[:-4]
+
+            jokers.append(joker)
+        return jokers
+
+
 
     def get_bind_data(self):
         info = self.analyze_in_bind()
         self.hand = self.identify_hand(info["hand_size"])
+        self.jokers = self.identify_jokers(info["joker_amount"])
         info["hand"] = self.hand
         return {
             "bind_amount": info["bind_amount"],

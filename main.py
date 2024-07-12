@@ -2,6 +2,7 @@ import modules.game_controller as gc
 import modules.algorithms as alg
 from PIL import Image
 from time import sleep
+import traceback
 import keyboard
 
 run_deck = "red_deck"
@@ -91,7 +92,7 @@ def main():
                                     pass
                         except Exception as e:
                             print("Error getting bind data")
-                            print(e)
+                            print(traceback.format_exc())
 
 
                     case "shop":
