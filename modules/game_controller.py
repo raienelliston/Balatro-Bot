@@ -130,19 +130,19 @@ class Controller:
             case "hand_bind":
                 start = 546
                 interval = 978 / hand_size
-                for i in range(len(hand)):
-                    self.move_mouse(start + interval * (i + 0.5), 778)
+                start += interval / 2
+                for i in hand:
+                    print(start + interval * (i + 0.5))
+                    self.move_mouse(start + interval * i, 778)
                     if click:
-                        self.click(start + interval * (i + 0.5), 778)
+                        self.click(start + interval * i, 778)
                     print(hand[i])
-                    while not keyboard.is_pressed("q"):
-                        pass
 
     def click(self, x, y, absolute=False):
         # Changes the coordinats to account for different window sizes and locations
         if not absolute:
-            x = self.balatro.width / self.width * x
-            y = self.balatro.height / self.height * y
+            x = self.balatro.width / 1920 * x
+            y = self.balatro.height / 1080 * y
         x = self.balatro.left + x
         y = self.balatro.top + y
 
@@ -270,7 +270,7 @@ class Controller:
             card = ["", "", "N", "N", "N"]
             
             self.move_mouse(start + interval * (i + 0.5), 778)
-            time.sleep(0.4)
+            time.sleep(0.07)
 
             screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
             screenshot.save("screenshot.png")
