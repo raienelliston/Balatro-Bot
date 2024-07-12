@@ -69,7 +69,7 @@ def main():
                         print("In Bind")
 
 
-                        bind_data = controller.analyze_in_bind(screenshot)
+                        bind_data = controller.handle_bind()
                         print(bind_data)
                     case "shop":
                         print("Shop")

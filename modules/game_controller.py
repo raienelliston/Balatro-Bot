@@ -1,6 +1,7 @@
 import pygetwindow as gw
 import pyautogui as pag
 import pytesseract
+import time
 # from modules.logger import Logger
 import cv2 as cv
 import os
@@ -157,10 +158,13 @@ class Controller:
         text = pytesseract.image_to_string(screenshot, lang='eng', config='--psm 6')
         return text
     
-    def analyze_in_bind(self, screenshot):
+    def analyze_in_bind(self):
         
         # Check for the current bind amount
         text = self.read_text((256, 256, 484, 314))
+
+        text = text.replace("\n", "")
+        text = text.replace("%", "")
 
         bind_amount = int(text.split(" ")[-1]) #Idk how to deal with e numbers
 
@@ -211,9 +215,18 @@ class Controller:
         if deck_size > deck_amount:
             deck_size = deck_size / 10
 
+        return {
+            "bind_amount": bind_amount,
+            "current_score": current_score,
+            "hand_size": hand_size,
+            "hand_amount": hand_amount,
+            "deck_size": deck_size,
+            "deck_amount": deck_amount
+        }
+
     def identify_hand(self, hand_size):
 
-        check_area = (518, 358, 1620, 654)
+        check_area = (505, 358, 1620, 654)
 
         # 546, 778
         #1542, 778
@@ -221,55 +234,63 @@ class Controller:
         interval = farthest_distance / hand_size
         start = 546
         hand = []
+        print(hand_size)
         for i in range(hand_size):
+        # for i in range(1):
             card = ["", "N", "N", "N"]
             
             self.move_mouse(start + interval * i, 778)
-            
+            time.sleep(0.4)
+
             screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
             screenshot.save("screenshot.png")
 
+            best = ["", 0]
             for f in os.listdir("openCVData/cards"):
                 img = cv.imread("openCVData/cards/" + f, 0)
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
-                if result > 0.8:
-                    card[0] = f
-                    break
+                if result > best[1]:
+                    best = [f[:-4], result]
+            if card[0] == "":
+                card[0] = best[0]
 
             for f in os.listdir("openCVData/enchantments"):
                 img = cv.imread("openCVData/enchantments/" + f, 0)
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
-                if result > 0.8:
-                    card[1] = f
+                if result > 0.85:
+                    card[1] = f[:-4]
                     break
 
             for f in os.listdir("openCVData/editions"):
                 img = cv.imread("openCVData/editions/" + f, 0)
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
-                if result > 0.8:
-                    card[2] = f
+                if result > 0.85:
+                    card[2] = f[:-4]
                     break
             
             for f in os.listdir("openCVData/seals"):
                 img = cv.imread("openCVData/seals/" + f, 0)
                 check = cv.imread("screenshot.png", 0)
                 result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
-                if result > 0.8:
-                    card[2] = f
+                if result > 0.85:
+                    card[2] = f[:-4]
                     break
 
             card = str(card[0]) + str(card[1]) + str(card[2]) + str(card[3])
             hand.append(card)
+        print(hand)
+        return hand
 
 
     def handle_bind(self):
-        self.analyze_in_bind(self.get_screenshot())
-
+        info = self.analyze_in_bind()
+        self.hand = self.identify_hand(info["hand_size"])
+        info["hand"] = self.hand
 
 
 if __name__ == "__main__":
     controller = Controller()
-    controller.resize_window(1920, 1080)
+    # controller.resize_window(1920, 1080)
