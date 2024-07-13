@@ -939,13 +939,59 @@ class Algorithm:
         }
         # Now check if the hand is a better option then the potential discards
 
+    def find_value(self, item, type):
+        value = self.sheet.loc[item, type]
+        if type == "cost" or type =="sell_value": # For voucher logic
+            if "clearacne_sale" in self.vouchers:
+                value *= 0.75
+            if "liquidation" in self.vouchers:
+                value *= 0.5
+        
+        return int(value)
+
+    def handle_preference(self, select_item):
+
+        check_items = ["base_worth"]
+        check_items += self.jokers + self.consumables + self.vouchers
+
+        select_item_worth = 0
+
+        chip_worth = self.sheet.loc[select_item, "chip_worth"]
+        mult_worth = self.sheet.loc[select_item, "mult_worth"]
+
+        type = self.sheet.loc[select_item, "type"]
+        
+        if type.find("Muti") != -1: # Checks if the item is a multiplier increaser
+            pass
+        if type.find("Chip") != -1: # Checks if the item is a chip increaser
+            pass
+        if type.find("Money") != -1: # Checks if the item is a money increaser
+            pass
+
+        for item in check_items:
+            value = self.sheet.loc[select_item, item]
+            match value:
+                case "Auto No":
+                    return 0
+                case "Auto Yes":
+                    select_item_worth == 99
+                    return select_item_worth
+                case _:
+                    select_item_worth += value
+
+        return [select_item, select_item_worth]
+
     def handle_buy(self, options):
+        # Sort the options into their respective categories
         jokers = []
         cards = []
         packs = []
         planets = []
         tarots = []
+        vouchers = []
+        preferences = []
         for option in options:
+            preferences.append(self.handle_preference(option))
             match options[type]:
                 case "joker":
                     jokers.append(option)
@@ -957,9 +1003,19 @@ class Algorithm:
                     planets.append(option)
                 case "tarot":
                     tarots.append(option)
+                case "voucher":
+                    vouchers.append(option)
                 case _:
                     print("Unknown Option")
                     exit()
+        
+        for preference in preferences:
+            if 
+
+        
+
+        
+
         
         
 
