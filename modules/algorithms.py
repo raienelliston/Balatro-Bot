@@ -260,7 +260,12 @@ class Algorithm:
                 hand_type = "straight_flush"
         # Check for four of a kind
             elif 4 in values:
-                active_cards = hand
+                cards = []
+                value = values.index(4)
+                for card in hand:
+                    if self.identify_card(card)["value"] == value:
+                        cards.append(card)
+                active_cards = cards
                 hand_type = "four_of_a_kind"
         # Check for full house and flush
             else:
@@ -275,20 +280,28 @@ class Algorithm:
             hand_type = "straight"
         # Check for three of a kind
         elif 3 in values:
-            active_cards = hand
+            cards = []
+            value = values.index(3)
+            for card in hand:
+                if self.identify_card(card)["value"] == value:
+                    cards.append(card)
+            active_cards = cards
             hand_type = "three_of_a_kind"
         # Check for two pair
         elif values.count(2) == 2:
             active_cards = hand
+            for card in hand:
+                if values[self.identify_card(card)["value"]] != 2:
+                    active_cards.remove(card)
             hand_type = "two_pair"
         # Check for pair
         elif 2 in values:
+            cards = []
+            value = values.index(2)
             for card in hand:
-                hand.remove(hand[0])
-                # print(str(hand) + " " + str(card))
-                for card2 in hand:
-                    if self.identify_card(card)["value"] == self.identify_card(card2)["value"]:
-                        active_cards = [card, card2]
+                if self.identify_card(card)["value"] == value:
+                    cards.append(card)
+            active_cards = cards
             hand_type = "pair"
         # Check for high card
         else:
@@ -330,8 +343,32 @@ class Algorithm:
             elif joker["name"] == "seltzer" or joker["name"] == "hack" or joker["sock_and_buskin"] or joker["name"] == "mime" or joker["name"] == "dusk" or joker["name"] == "hanging_chad":
                 joker["active"] = True
 
+        match self.boss:
+            case "the_psychic":
+                return 0
+            case _:
+                pass
+
         # Scores the hand
         for index in range(len(active_cards)):
+
+            # Debuff logic here (Bosses)
+            match self.boss:
+                case "the_club":
+                    if active_cards[index][0] == "C":
+                        continue
+                case "the_goad":
+                    if active_cards[index][0] == "S":
+                        continue
+                case "the_window":
+                    if active_cards[index][0] == "D":
+                        continue
+                case "the_head":
+                    if active_cards[index][0] == "H":
+                        continue
+                case _:
+                    pass
+
             card = active_cards[index]
             triggers = 1
             while triggers > 0:
@@ -716,6 +753,7 @@ class Algorithm:
         
         self.current_discards = bind_data["current_discards"]
         self.current_hands = bind_data["current_hands"]
+        self.boss = bind_data["boss"]
 
         offset = 0
         for index, joker in enumerate(self.jokers):

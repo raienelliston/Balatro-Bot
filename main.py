@@ -86,7 +86,7 @@ def main():
                                     controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=bind_data["hand_size"])
                                     controller.click(1250, 975)
                                 case "comsume":
-                                    pass
+                                    controller.use_consumable(action["consumable"], action["index"])
                                 case _:
                                     print("Unknown Action")
                                     pass

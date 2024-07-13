@@ -453,17 +453,25 @@ class Controller:
 
         return boss
 
-    def get_bind_data(self):
+    def use_consumable(self, consumable, index):
+        pass
+
+    def get_bind_data(self, bind_type):
         info = self.analyze_in_bind()
         self.hand = self.identify_hand(info["hand_size"])
         self.jokers = self.identify_jokers(info["joker_amount"])
         self.consumables = self.identify_consumables(info["consumable_amount"])
+        if bind_type == "boss":
+            boss = self.identify_boss()
+        else:
+            boss = None
         info["hand"] = self.hand
         return {
             "bind_amount": info["bind_amount"],
             "current_score": info["current_score"],
             "hand": info["hand"],
             "hand_size": info["hand_size"],
+            "boss": boss
         }
 
 

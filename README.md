@@ -255,3 +255,33 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] Cryptid
 - [] The Soul
 - [] Black Hole
+
+### Boss Blinds
+- [x] Amber Acorn (Nothing Needed)
+- [] Verdant Leaf 
+- [x] Violet Vessel (Nothing Needed)
+- [] Crimson Heart
+- [] Cerulean Bell
+- [] The Hook
+- [] The Ox
+- [] The House
+- [x] The Wall (Nothing Needed)
+- [] The Wheel
+- [] The Arm
+- [x] The Club
+- [] The Fish
+- [x] The Psychic
+- [x] The Goad
+- [] The Water
+- [x] The Window
+- [x] The Manacle (Nothing Needed)
+- [] The Eye
+- [] The Mouth
+- [] The Plant
+- [] The Serpent
+- [] The Pillar
+- [] The Needle
+- [x] The Head
+- [] The Tooth
+- [] The Flint
+- [] The Mark
