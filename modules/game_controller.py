@@ -208,6 +208,9 @@ class Controller:
 
     def identify_hand(self, hand_size):
 
+        if hand_size == 0:
+            return []
+
         check_area = (int(self.balatro.width / 1920 * 505), int(self.balatro.width / 1920 * 358), int(self.balatro.width / 1920 * 1620), int(self.balatro.width / 1920 * 644))
 
         # 546, 778
@@ -280,6 +283,10 @@ class Controller:
         return hand
 
     def identify_jokers(self, joker_amount):
+
+        if joker_amount == 0:
+            return []
+
         check_area = (int(self.balatro.width / 1920 * 456), int(self.balatro.width / 1920 * 284), int(self.balatro.width / 1920 * 1470), int(self.balatro.width / 1920 * 560))
         start = 0
         end = 0
@@ -321,6 +328,10 @@ class Controller:
         return jokers
 
     def identify_consumables(self, consumable_amount):
+
+        if consumable_amount == 0:
+            return []
+
         check_area = (int(self.balatro.width / 1920 * 1332), int(self.balatro.width / 1920 * 284), int(self.balatro.width / 1920 * 1902), int(self.balatro.width / 1920 * 506))
         start = 0
         end = 0
@@ -383,21 +394,16 @@ class Controller:
     def use_consumable(self, consumable, index):
         pass
 
-    def get_bind_data(self, bind_type="small", hand_size=0):
+    def get_bind_data(self, hand_size=0, joker_amount=0, consumable_amount=0):
         info = self.analyze_in_bind()
-        self.hand = self.identify_hand(hand_size)
-        self.jokers = self.identify_jokers(info["joker_amount"])
-        self.consumables = self.identify_consumables(info["consumable_amount"])
-        if bind_type == "boss":
-            boss = self.identify_boss()
-        else:
-            boss = None
-        info["hand"] = self.hand
+        hand = self.identify_hand(hand_size)
+        jokers = self.identify_jokers(joker_amount)
+        consumables = self.identify_consumables(consumable_amount)
         return {
             "current_score": info["current_score"],
-            "hand": info["hand"],
-            "boss": boss,
-            "bind_type": bind_type
+            "hand": hand,
+            "jokers": jokers,
+            "consumables": consumables,
         }
 
 

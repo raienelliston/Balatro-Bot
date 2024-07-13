@@ -13,7 +13,7 @@ stake_list = [
     "yellow_stake",
 ]
 
-bind_base_amount = [300]
+bind_base_amount = [100, 300, 800, 2000, 5000, 11000, 20000, 35000, 50000]
 
 class Algorithm:
     def __init__(self, deck, stake, controller):
@@ -41,6 +41,7 @@ class Algorithm:
         self.current_bind = 1
         self.current_bind_type = "small"
         self.current_bind_amount = 300
+        self.boss = None
         self.stake = stake_list.index(stake)
         self.hand_values = [
             {"name": "flush_five", "value": 160, "multiplier": 16, "played": 0},
@@ -766,9 +767,8 @@ class Algorithm:
 
     def pre_bind_logic(self, bind_data):
         
-        self.current_discards = bind_data["current_discards"]
-        self.current_hands = bind_data["current_hands"]
-        self.boss = bind_data["boss"]
+        self.current_discards = self.discards
+        self.current_hands = self.discards
         self.played_hands = []
 
         match self.current_bind_type:
@@ -895,7 +895,7 @@ class Algorithm:
                 case _:
                     pass
 
-    def get_hands(self):
+    def get_hand_size(self):
         self.current_hands = self.hands
 
         for joker in self.jokers:
@@ -904,6 +904,8 @@ class Algorithm:
                     self.current_hands += 1
                 case _:
                     pass
+        
+        return self.current_hands
 
     def get_discards(self):
         self.current_discards = self.discards

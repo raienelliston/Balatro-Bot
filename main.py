@@ -73,8 +73,11 @@ def main():
                         print("In Bind")
 
                         try:
+                            if algorithm.current_bind_type == "boss":
+                                algorithm.boss = controller.identify_boss()
+                            hand_size = algorithm.get_hand_size()
+                            bind_data = controller.get_bind_data(hand_size, len(algorithm.jokers), len(algorithm.consumables))
                             algorithm.pre_bind_logic(bind_data)
-                            bind_data = controller.get_bind_data(algorithm.current_bind_type, algorithm.current_hands)
                             print(bind_data)
                             action = algorithm.handle_bind(bind_data)
                             
