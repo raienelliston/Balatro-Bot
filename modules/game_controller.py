@@ -344,12 +344,16 @@ class Controller:
                     break
 
             card = str(card[0]) + str(card[1]) + str(card[2]) + str(card[3] + str(card[4]))
+
+            if card[3] == "R": # Special case for the stone cards
+                card = "R0R" + card[3:]
+
             hand.append(card)
         print(hand)
         return hand
 
     def identify_jokers(self, joker_amount):
-        check_area = (int(self.balatro.width / 1920 * 505), int(self.balatro.width / 1920 * 358), int(self.balatro.width / 1920 * 1620), int(self.balatro.width / 1920 * 644))
+        check_area = (int(self.balatro.width / 1920 * 456), int(self.balatro.width / 1920 * 284), int(self.balatro.width / 1920 * 1470), int(self.balatro.width / 1920 * 560))
         start = 0
         end = 0
         interval = (end - start) / joker_amount
@@ -389,12 +393,71 @@ class Controller:
             jokers.append(joker)
         return jokers
 
+    def identify_consumables(self, consumable_amount):
+        check_area = (int(self.balatro.width / 1920 * 1332), int(self.balatro.width / 1920 * 284), int(self.balatro.width / 1920 * 1902), int(self.balatro.width / 1920 * 506))
+        start = 0
+        end = 0
+        interval = (end - start) / consumable_amount
 
+        consumables = []
+        for i in len(consumable_amount):
+            consumable = {
+                "name": "",
+                "enchantment": "",
+                "value": 1
+            }
+
+            self.move_mouse(start + interval * (i + 0.5), 778)
+            time.sleep(0.07)
+
+            screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
+            screenshot.save("screenshot.png")
+
+            best = ["", 0]
+            for f in os.listdir("openCVData/consumables"):
+                img = cv.imread("openCVData/consumables/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > best[1]:
+                    best = [f[:-4], result]
+            consumable["name"] = best[0]
+
+            for f in os.listdir("openCVData/consumable_enchantments"):
+                img = cv.imread("openCVData/consumable_enchantments/" + f, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > 0.85:
+                    consumable[1] = f[:-4]
+                    break
+            consumable["enchantment"] = f[:-4]
+
+            consumables.append(consumable)
+        return consumables
+
+    def identify_boss(self):
+        check_area = (int(self.balatro.width / 1920 * 82), int(self.balatro.width / 1920 * 240), int(self.balatro.width / 1920 * 216), int(self.balatro.width / 1920 * 360))
+
+        boss = ""
+
+        screenshot = pag.screenshot(region=(check_area[0], check_area[1], check_area[2] - check_area[0], check_area[3] - check_area[1]))
+        screenshot.save("screenshot.png")
+
+        best = ["", 0]
+        for f in os.listdir("openCVData/boss_binds"):
+            img = cv.imread("openCVData/boss_binds/" + f, 0)
+            check = cv.imread("screenshot.png", 0)
+            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+            if result > best[1]:
+                best = [f[:-4], result]
+        boss = best[0]
+
+        return boss
 
     def get_bind_data(self):
         info = self.analyze_in_bind()
         self.hand = self.identify_hand(info["hand_size"])
         self.jokers = self.identify_jokers(info["joker_amount"])
+        self.consumables = self.identify_consumables(info["consumable_amount"])
         info["hand"] = self.hand
         return {
             "bind_amount": info["bind_amount"],
