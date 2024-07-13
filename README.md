@@ -275,10 +275,10 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] The Water
 - [x] The Window
 - [x] The Manacle (Nothing Needed)
-- [] The Eye
-- [] The Mouth
-- [] The Plant
-- [] The Serpent
+- [x] The Eye
+- [x] The Mouth
+- [x] The Plant
+- [x] The Serpent (Nothing Needed)
 - [] The Pillar
 - [] The Needle
 - [x] The Head

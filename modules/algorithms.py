@@ -346,11 +346,25 @@ class Algorithm:
         match self.boss:
             case "the_psychic":
                 return 0
+            case "the_mouth":
+                if self.played_hands == [] or not hand_type in self.played_hands:
+                    return 0
+            case "the_eye":
+                if hand_type in self.played_hands:
+                    return 0
             case _:
                 pass
 
         # Scores the hand
         for index in range(len(active_cards)):
+
+            face_card = False
+
+            if card[1] == "J" or card[1] == "Q" or card[1] == "K":
+                face_card = True
+            for jokers in self.jokers:
+                if joker["name"] == "pareidolia":
+                    face_card = True
 
             # Debuff logic here (Bosses)
             match self.boss:
@@ -366,8 +380,14 @@ class Algorithm:
                 case "the_head":
                     if active_cards[index][0] == "H":
                         continue
+                case "the_plant":
+                    if face_card:
+                        continue
                 case _:
                     pass
+
+            if card[2] == "D":
+                continue
 
             card = active_cards[index]
             triggers = 1
@@ -409,14 +429,6 @@ class Algorithm:
                 except IndexError:
                     pass
                 triggers -= 1
-
-            face_card = False
-
-            if card[1] == "J" or card[1] == "Q" or card[1] == "K":
-                face_card = True
-            for jokers in self.jokers:
-                if joker["name"] == "pareidolia":
-                    face_card = True
 
             # Joker logic here that are for "on played" jokers
             on_played_triggers = 1
@@ -754,6 +766,7 @@ class Algorithm:
         self.current_discards = bind_data["current_discards"]
         self.current_hands = bind_data["current_hands"]
         self.boss = bind_data["boss"]
+        self.played_hands = []
 
         offset = 0
         for index, joker in enumerate(self.jokers):
@@ -774,7 +787,6 @@ class Algorithm:
             elif joker["name"] == "turtle_bean":
                 self.jokers[index - offset]["value"] -= 1
             
-            
     def pre_hand_logic(self, hand):
         
         for joker in self.jokers:
@@ -784,8 +796,10 @@ class Algorithm:
                 case _:
                     pass
 
-    def post_hand_logic(self, hand):
+    def post_hand_logic(self, hand, hand_type):
             
+        self.played_hands.append(hand_type)
+
         offset = 0
         for index, joker in enumerate(self.jokers):
             match joker["name"]:
@@ -800,8 +814,6 @@ class Algorithm:
                         offset += 1
                 case _:
                     pass
-                
-
 
     def post_bind_logic(self, bind_data):
         
@@ -827,7 +839,6 @@ class Algorithm:
                     pass
                 case _:
                     pass
-
 
     def get_hands(self):
         self.current_hands = self.hands
