@@ -73,10 +73,11 @@ def main():
                         print("In Bind")
 
                         try:
-                            bind_data = controller.get_bind_data()
+                            algorithm.pre_bind_logic(bind_data)
+                            bind_data = controller.get_bind_data(algorithm.current_bind_type, algorithm.current_hands)
                             print(bind_data)
-
                             action = algorithm.handle_bind(bind_data)
+                            
                             print(action)
                             match action["action"]:
                                 case "play":

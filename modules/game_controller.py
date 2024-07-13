@@ -188,13 +188,14 @@ class Controller:
 
         # Check for the current round score
 
-        text = self.read_text((236, 400, 488, 455))
+        text = self.read_text((236, 410, 488, 465))
         print(text)
 
         text = text.split(" ")[-1]
         text = text.replace("#", "")
         text = text.replace("\n", "")
         text = text.replace("*", "")
+        text = text.replace("N", "0")
         if not text[0].isnumeric():
             text = text[1:]
         current_score = int(text)
@@ -382,9 +383,9 @@ class Controller:
     def use_consumable(self, consumable, index):
         pass
 
-    def get_bind_data(self, bind_type="small"):
+    def get_bind_data(self, bind_type="small", hand_size=0):
         info = self.analyze_in_bind()
-        self.hand = self.identify_hand(info["hand_size"])
+        self.hand = self.identify_hand(hand_size)
         self.jokers = self.identify_jokers(info["joker_amount"])
         self.consumables = self.identify_consumables(info["consumable_amount"])
         if bind_type == "boss":

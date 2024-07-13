@@ -13,6 +13,8 @@ stake_list = [
     "yellow_stake",
 ]
 
+bind_base_amount = [300]
+
 class Algorithm:
     def __init__(self, deck, stake, controller):
         self.controller = controller
@@ -36,6 +38,9 @@ class Algorithm:
         self.max_consumables = 2
         self.vouchers = []
         self.deck = deck
+        self.current_bind = 1
+        self.current_bind_type = "small"
+        self.current_bind_amount = 300
         self.stake = stake_list.index(stake)
         self.hand_values = [
             {"name": "flush_five", "value": 160, "multiplier": 16, "played": 0},
@@ -766,6 +771,22 @@ class Algorithm:
         self.boss = bind_data["boss"]
         self.played_hands = []
 
+        match self.current_bind_type:
+            case "small":
+                self.current_bind_amount = bind_base_amount[self.current_bind]
+            case "big":
+                self.current_bind_amount = bind_base_amount[self.current_bind] * 1.5
+            case "boss":
+                match self.boss:
+                    case "the_wall":
+                        self.current_bind_amount = bind_base_amount[self.current_bind] * 4
+                    case "the_needle":
+                        self.current_bind_amount = bind_base_amount[self.current_bind]
+                    case "violet_vessel":
+                        self.current_bind_amount = bind_base_amount[self.current_bind] * 6
+                    case _:
+                        self.current_bind_amount = bind_base_amount[self.current_bind] * 2
+
         offset = 0
         for index, joker in enumerate(self.jokers):
             match joker["name"]:
@@ -785,6 +806,25 @@ class Algorithm:
                     self.jokers[index - offset]["value"] += 0.5
                 case "turtle_bean":
                     self.jokers[index - offset]["value"] -= 1
+                case _:
+                    pass
+
+        for index, voucher in enumerate(self.vouchers):
+            match voucher:
+                case "grabber" | "nacho_tong":
+                    selfcurrent_hands += 1
+                case "wasteful" | "recyclomancy":
+                    self.current_discards += 1
+
+        match self.boss:
+            case "the_water":
+                self.current_discards = 0
+            case "the_needle":
+                self.current_hands = 1
+            case "the_manacle":
+                self.current_hands -= 1
+            case _:
+                pass
             
     def pre_hand_logic(self, hand):
         
@@ -818,6 +858,8 @@ class Algorithm:
             for hand_value in self.hand_values:
                 if hand_value["name"] == hand_type and hand_value["level"] > 1:
                     hand_level -= 1
+        elif self.boss == "the_tooth":
+            self.money -= len(hand)
 
     def post_bind_logic(self, bind_data):
         
@@ -834,6 +876,15 @@ class Algorithm:
                         self.jokers[index]["value"] += 2
                 case _:
                     pass
+
+        match self.current_bind_type:
+            case "small":
+                self.current_bind_type = "big"
+            case "big":
+                self.current_bind_type = "boss"
+            case "boss":
+                self.current_bind_type = "small"
+                self.current_bind += 1
 
     def handle_discard(self, discard_values, hand):
 
@@ -871,7 +922,7 @@ class Algorithm:
 
     def handle_bind(self, bind_data):
         current_score = bind_data["current_score"]
-        bind_amount = bind_data["bind_amount"]
+        bind_amount = self.current_bind_amount
 
         goal = bind_amount - current_score
 

@@ -259,7 +259,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 ### Boss Blinds
 - [x] Amber Acorn (Nothing Needed)
 - [] Verdant Leaf 
-- [x] Violet Vessel (Nothing Needed)
+- [x] Violet Vessel
 - [] Crimson Heart
 - [] Cerulean Bell
 - [] The Hook
@@ -272,7 +272,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] The Fish
 - [x] The Psychic
 - [x] The Goad
-- [x] The Water (Nothing Needed)
+- [x] The Water
 - [x] The Window
 - [x] The Manacle (Nothing Needed)
 - [x] The Eye
@@ -280,8 +280,8 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] The Plant
 - [x] The Serpent (Nothing Needed)
 - [] The Pillar
-- [] The Needle
+- [x] The Needle
 - [x] The Head
-- [x] The Tooth (Nothing Needed)
+- [x] The Tooth
 - [] The Flint
 - [] The Mark
