@@ -75,7 +75,7 @@ def main():
                         try:
                             if algorithm.current_bind_type == "boss":
                                 algorithm.boss = controller.identify_boss()
-                            hand_size = algorithm.get_hand_size()
+                            hand_size = algorithm.hand_size
                             bind_data = controller.get_bind_data(hand_size, len(algorithm.jokers), len(algorithm.consumables))
                             algorithm.pre_bind_logic(bind_data)
                             print(bind_data)
@@ -84,10 +84,10 @@ def main():
                             print(action)
                             match action["action"]:
                                 case "play":
-                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=bind_data["hand_size"])
-                                    # controller.click(1250, 975)
+                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=hand_size)
+                                    controller.click(800, 975)
                                 case "discard":
-                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=bind_data["hand_size"])
+                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=hand_size)
                                     controller.click(1250, 975)
                                 case "comsume":
                                     controller.use_consumable(action["consumable"], action["index"])

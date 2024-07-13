@@ -165,39 +165,34 @@ class Algorithm:
                         for index5 in range(index4 + 1, len(hand)):
                             card5 = hand[index5]
                             hand_check = [card1, card2, card3, card4, card5]
-                            hand_value = self.find_hand_value(hand_check)
-                            if hand_value > best_hand["value"]:
-                                best_hand["value"] = hand_value
-                                best_hand["hand"] = hand_check
+                            hand_result = self.find_hand_value(hand_check)
+                            if hand_result["value"] > best_hand["value"]:
+                                best_hand = hand_result
                         hand_check = [card1, card2, card3, card4]
-                        hand_value = self.find_hand_value(hand_check)
-                        if hand_value > best_hand["value"]:
-                            best_hand["value"] = hand_value
-                            best_hand["hand"] = hand_check
+                        hand_result = self.find_hand_value(hand_check)
+                        if hand_result["value"] > best_hand["value"]:
+                            best_hand = hand_result
                     hand_check = [card1, card2, card3]
-                    hand_value = self.find_hand_value(hand_check)
-                    if hand_value > best_hand["value"]:
-                        best_hand["value"] = hand_value
-                        best_hand["hand"] = hand_check
+                    hand_result = self.find_hand_value(hand_check)
+                    if hand_result["value"] > best_hand["value"]:
+                        best_hand = hand_result
                 hand_check = [card1, card2]
-                hand_value = self.find_hand_value(hand_check)
-                if hand_value > best_hand["value"]:
-                    best_hand["value"] = hand_value
-                    best_hand["hand"] = hand_check
+                hand_result = self.find_hand_value(hand_check)
+                if hand_result["value"] > best_hand["value"]:
+                    best_hand = hand_result
             hand_check = [card1]
-            hand_value = self.find_hand_value(hand_check)
-            if hand_value > best_hand["value"]:
-                best_hand["value"] = hand_value
-                best_hand["hand"] = hand_check
+            hand_result = self.find_hand_value(hand_check)
+            if hand_result["value"] > best_hand["value"]:
+                best_hand = hand_result
 
 
-        for r in range(1, 6):
-            for hand in combinations(hand, r):
-                print(hand)
-                hand_value = self.find_hand_value(hand)
-                if hand_value > best_hand["value"]:
-                    best_hand["value"] = hand_value
-                    best_hand["hand"] = hand
+        # for r in range(1, 6):
+        #     for hand in combinations(hand, r):
+        #         print(hand)
+        #         hand_value = self.find_hand_value(hand)
+        #         if hand_value > best_hand["value"]:
+        #             best_hand["value"] = hand_value
+        #             best_hand["hand"] = hand
                 
         print(best_hand)
         hand_numbers = []
@@ -761,9 +756,11 @@ class Algorithm:
         #             multiplier += 10
         #         case "P":
         #             multiplier *= 1.5
-                
-
-        return value * multiplier
+        return {
+            "value": value * multiplier,
+            "hand": hand,
+            "type": hand_type
+        }
 
     def pre_bind_logic(self, bind_data):
         
@@ -895,7 +892,7 @@ class Algorithm:
                 case _:
                     pass
 
-    def get_hand_size(self):
+    def get_hands(self):
         self.current_hands = self.hands
 
         for joker in self.jokers:

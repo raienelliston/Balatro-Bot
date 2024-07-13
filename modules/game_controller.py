@@ -146,7 +146,8 @@ class Controller:
         x = self.balatro.left + x
         y = self.balatro.top + y
 
-        pag.click(x, y) 
+        pag.moveTo(x, y)
+        # pag.click(x, y) 
 
     def move_mouse(self, x, y, absolute=False):
         if not absolute:
