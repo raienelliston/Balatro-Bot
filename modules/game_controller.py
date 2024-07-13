@@ -185,19 +185,6 @@ class Controller:
         return text
     
     def analyze_in_bind(self):
-        
-        # Check for the current bind amount
-        
-        text = self.read_text((256, 231, 484, 286))
-        print(text)
-        text = text.replace("\n", "")
-        text = text.replace("%", "")
-        text = text.replace("Y", "4")
-
-        bind_amount = int(text.split(" ")[-1]) #Idk how to deal with e numbers
-
-        print(bind_amount)
-
 
         # Check for the current round score
 
@@ -214,69 +201,8 @@ class Controller:
 
         print(current_score)
 
-        # Check hand size/amount
-
-        text = self.read_text((1012, 862, 1076, 893))
-        text = text.replace("/", " ")
-        text = text.replace("\n", "")
-        print(text)
-
-        hand_size = int(text[-1])
-        hand_amount = int(text[0])
-
-        print(hand_size)
-        print(hand_amount)
-
-        # Check deck size/amount
-
-        text = self.read_text((1649, 1013, 1774, 1054))
-
-        print(text)
-        text = text.replace("/", " ")
-        text = text.replace("\n", "")
-        text = text.replace("y", "4")
-        text = text.replace("Y", "4")
-        text = text.split(" ")
-        print(text)
-
-        deck_size = int(text[-1])
-        deck_amount = int(text[0])
-
-        if deck_size > deck_amount:
-            deck_size = deck_size / 10
-
-        text = self.read((523, 273, 576, 301))
-        text = text.replace("\n", "")
-        text = text.replace("Y", "4")
-        text = text.replace("y", "4")
-        text = text.replace("/", " ")
-        text = text.split(" ")
-
-        joker_amount = int(text[0])
-        joker_limit = int(text[-1])
-
-        text = self.read((1714, 277, 1776, 306))
-
-        text = text.replace("\n", "")
-        text = text.replace("Y", "4")
-        text = text.replace("y", "4")
-        text = text.replace("/", " ")
-        text = text.split(" ")
-
-        consumable_amount = int(text[0])
-        consumable_limit = int(text[-1])
-
         return {
-            "bind_amount": bind_amount,
             "current_score": current_score,
-            "hand_size": hand_size,
-            "hand_amount": hand_amount,
-            "deck_size": deck_size,
-            "deck_amount": deck_amount,
-            "joker_amount": joker_amount,
-            "joker_limit": joker_limit,
-            "consumable_amount": consumable_amount,
-            "consumable_limit": consumable_limit
         }
 
     def identify_hand(self, hand_size):
@@ -456,7 +382,7 @@ class Controller:
     def use_consumable(self, consumable, index):
         pass
 
-    def get_bind_data(self, bind_type):
+    def get_bind_data(self, bind_type="small"):
         info = self.analyze_in_bind()
         self.hand = self.identify_hand(info["hand_size"])
         self.jokers = self.identify_jokers(info["joker_amount"])
@@ -467,11 +393,10 @@ class Controller:
             boss = None
         info["hand"] = self.hand
         return {
-            "bind_amount": info["bind_amount"],
             "current_score": info["current_score"],
             "hand": info["hand"],
-            "hand_size": info["hand_size"],
-            "boss": boss
+            "boss": boss,
+            "bind_type": bind_type
         }
 
 
