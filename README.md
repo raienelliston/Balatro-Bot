@@ -272,7 +272,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] The Fish
 - [x] The Psychic
 - [x] The Goad
-- [] The Water
+- [x] The Water (Nothing Needed)
 - [x] The Window
 - [x] The Manacle (Nothing Needed)
 - [x] The Eye
@@ -282,6 +282,6 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] The Pillar
 - [] The Needle
 - [x] The Head
-- [] The Tooth
+- [x] The Tooth (Nothing Needed)
 - [] The Flint
 - [] The Mark

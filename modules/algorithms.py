@@ -1,3 +1,4 @@
+import pandas as pd
 from itertools import combinations
 from collections import Counter
 
@@ -15,6 +16,10 @@ stake_list = [
 class Algorithm:
     def __init__(self, deck, stake, controller):
         self.controller = controller
+
+        # Pandas setup
+        self.sheet = pd.read_csv("preferences.csv")
+
         # All of the defualt variables
         self.deck = ["CA", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9", "C10", "CJ", "CQ", "CK", "DA", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "D9", "D10", "DJ", "DQ", "DK", "HA", "H2", "H3", "H4", "H5", "H6", "H7", "H8", "H9", "H10", "HJ", "HQ", "HK", "SA", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10", "SJ", "SQ", "SK"]
         self.current_deck = self.deck
@@ -123,7 +128,6 @@ class Algorithm:
                 card["value"] = int(id[1])
         return card
     
-    # Iterates through
     def find_best_hand(self, hand, goal=None):
         value = 0
         multiplier = 1
@@ -217,12 +221,17 @@ class Algorithm:
         # print(values)
         # print(suits)
 
+        shortcut = False
+        for joker in self.jokers:
+            if joker["name"] == "shortcut":
+                shortcut = True
+
         # Check if it's a flush at all
         straight = False
         for i in range(1, 10):
             if values[i] == 1 and values[i + 1] == 1 and values[i + 2] == 1 and values[i + 3] == 1 and values[i + 4] == 1:
                 straight = True
-        if False: # CHECK IF CURRENTLY HAVE SHORTCUT
+        if shortcut: # CHECK IF CURRENTLY HAVE SHORTCUT
             offset = 0
             for i in range(1, 10):
                 offset = 0
@@ -815,6 +824,11 @@ class Algorithm:
                 case _:
                     pass
 
+        if self.boss == "the_arm":
+            for hand_value in self.hand_values:
+                if hand_value["name"] == hand_type and hand_value["level"] > 1:
+                    hand_level -= 1
+
     def post_bind_logic(self, bind_data):
         
         for index, joker in enumerate(self.jokers):
@@ -885,10 +899,29 @@ class Algorithm:
         }
         # Now check if the hand is a better option then the potential discards
 
-
-
-
-
+    def handle_buy(self, options):
+        jokers = []
+        cards = []
+        packs = []
+        planets = []
+        tarots = []
+        for option in options:
+            match options[type]:
+                case "joker":
+                    jokers.append(option)
+                case "card":
+                    cards.append(option)
+                case "pack":
+                    packs.append(option)
+                case "planet":
+                    planets.append(option)
+                case "tarot":
+                    tarots.append(option)
+                case _:
+                    print("Unknown Option")
+                    exit()
+        
+        
 
 if __name__ == "__main__":
     algo = Algorithm("red_deck", "red_stake", None)
