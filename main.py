@@ -84,7 +84,7 @@ def main():
                             print(action)
                             match action["action"]:
                                 case "play":
-                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=hand_size)
+                                    controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=hand_size, consume=action["consume"])
                                     controller.click(800, 975)
                                 case "discard":
                                     controller.select_cards(action["hand"], "hand_bind", click=True, hand_size=hand_size)

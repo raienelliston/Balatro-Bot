@@ -135,7 +135,7 @@ class Algorithm:
                 card["value"] = int(id[1])
         return card
     
-    def find_best_hand(self, hand, goal=None):
+    def find_best_hand(self, hand, goal=None, consumables=None):
         value = 0
         multiplier = 1
         best_hand = {
@@ -208,6 +208,33 @@ class Algorithm:
             "hand": hand_numbers,
             "value": best_hand["value"]
         }
+
+    def find_best_hand_with_consumable(self, hand, goal=None):
+
+        consumables = []
+
+        # Adds jokers that are related
+        for joker in self.jokers:
+            if joker["name"] in [""]:
+                consumables.append(joker)
+
+        # Adds consumables that are related
+        for consumable in self.consumables:
+            if not consumable in [""]:
+                consumables.append(consumable)
+
+        best_hand = []
+        for i in range(consumables):
+            for combo in combinations(hand, i):
+                hand_result = self.find_hand_value(hand)
+                if hand_result["value"] >= goal:
+                    best_hand.append(hand_result)
+
+        if len(best_hand) == 0:
+            return False
+        
+        return best_hand.sort(key=lambda x: x["value"])[0]
+
 
     def find_best_discard(self, hand, goal=None):
         discard = []
@@ -952,9 +979,36 @@ class Algorithm:
         if best_hand["value"] >= goal:
             return {
                 "action": "play",
-                "hand": best_hand["hand"]
+                "hand": best_hand["hand"],
+                "consume": []
             }
-        
+
+        best_consumable_hand = self.find_best_hand_conusmable(bind_data["hand"], goal)
+        if best_consumable_hand != False:
+            for consumable in best_consumable_hand["consume"]:
+                if consumable in self.consumables:
+                    self.consumables.remove(consumable)
+                if consumable in self.jokers:
+                    self.sell_joker(consumable)
+            return {
+                "action": "play",
+                "hand": best_consumable_hand["hand"],
+                "consume": best_consumable_hand["consume"]
+            }
+
+        if self.current_discards > 0:
+            best_discard = self.find_best_discard(bind_data["hand"], goal)
+            if best_discard["weighted_points"] < best_hand["value"]:
+                return {
+                    "action": "discard",
+                    "hand": best_discard["hand"]
+                }
+            return {
+                "action": "discard",
+                "hand": best_discard["hand"]
+            }
+
+        # If everything fails, then this means we lose or screwed up. This is the losing hand
         return {
             "action": "play",
             "hand": best_hand["hand"]
