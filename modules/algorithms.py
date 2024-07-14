@@ -235,11 +235,32 @@ class Algorithm:
         
         return best_hand.sort(key=lambda x: x["value"])[0]
 
-
     def find_best_discard(self, hand, goal=None):
-        discard = []
-        for index, card in enumerate(hand):
-            pass
+        
+        best_discard = {
+            "value": 0,
+            "hand": []
+        }
+
+        for i in len(hand):
+            combos = combinations(hand, i)
+            for combo in combos:
+                hand = list(set(hand) - set(combo))
+                new_cards = combinations(self.current_deck, len(combo))
+                possablities = 0
+                accumulative_value = 0
+                for new_card in new_cards:
+                    best_hand = self.find_best_hand(hand + new_card)
+                    possablities += 1
+                    accumulative_value += best_hand["value"]
+
+                if accumulative_value / possablities >= best_discard["value"]:
+                    best_discard = {
+                        "value": accumulative_value / possablities,
+                        "hand": combo
+                    }
+        
+        return best_discard
 
     def find_hand_value(self, hand):
         print(hand)
@@ -769,21 +790,16 @@ class Algorithm:
                         multiplier *= 3
                 case _:
                     pass
-            
-            
-                    
-            
-            
 
-        # # Applies bonuses from joker editions and types
-        # for joker in self.jokers:
-        #     match joker['edition']:
-        #         case "F":
-        #             value += 50
-        #         case "H":
-        #             multiplier += 10
-        #         case "P":
-        #             multiplier *= 1.5
+        # Applies bonuses from joker editions and types
+        for joker in self.jokers:
+            match joker['edition']:
+                case "F":
+                    value += 50
+                case "H":
+                    multiplier += 10
+                case "P":
+                    multiplier *= 1.5
         return {
             "value": value * multiplier,
             "hand": hand,
@@ -915,10 +931,37 @@ class Algorithm:
 
     def handle_discard(self, discard_values, hand):
 
-        for joker in self.jokers:
+        self.discarded += discard_values
+
+        for index, joker in enumerate(self.jokers):
             match joker["name"]:
                 case "faceless_joker":
+                    face_card = 0
+                    for card in discard_values:
+                        
+                            
+                        if card[1] == "J" or card[1] == "Q" or card[1] == "K":
+                            face_card += 1
+                case "main-in_rebate":
                     pass
+                case "trading_card":
+                    if len(discard_values) == 1 and self.discard_times == 0:
+                        self.discarded.remove(discard_values[0])
+                        self.money += 3
+                case "ramen":
+                    self.jokers[index]["value"] -= 0.01
+                case "castle":
+                    pass
+                case "hit_the_road":
+                    self.jokers[index]["value"] += 0.5
+                case "burnt_joker":
+                    if self.dicard_times == 0:
+                        self.hand_type_upgrade(self.find_best_hand(hand)["type"])
+                case "yorick":
+                    self.jokers[index]["discards"] -= 1
+                    if self.jokers[index]["discards"] <= 0:
+                        self.jokers[index]["value"] += 1
+                        self.jokers[index]["discards"] = 23
                 case _:
                     pass
 
@@ -985,27 +1028,28 @@ class Algorithm:
 
         best_consumable_hand = self.find_best_hand_conusmable(bind_data["hand"], goal)
         if best_consumable_hand != False:
-            for consumable in best_consumable_hand["consume"]:
-                if consumable in self.consumables:
-                    self.consumables.remove(consumable)
-                if consumable in self.jokers:
-                    self.sell_joker(consumable)
-            return {
-                "action": "play",
-                "hand": best_consumable_hand["hand"],
-                "consume": best_consumable_hand["consume"]
-            }
+            if best_consumable_hand["value"] >= goal:
+                for consumable in best_consumable_hand["consume"]:
+                    if consumable in self.consumables:
+                        self.consumables.remove(consumable)
+                    if consumable in self.jokers:
+                        self.sell_joker(consumable)
+                return {
+                    "action": "play",
+                    "hand": best_consumable_hand["hand"],
+                    "consume": best_consumable_hand["consume"]
+                }
 
         if self.current_discards > 0:
             best_discard = self.find_best_discard(bind_data["hand"], goal)
-            if best_discard["weighted_points"] < best_hand["value"]:
+            if best_discard["value"] > best_hand["value"]:
                 return {
                     "action": "discard",
                     "hand": best_discard["hand"]
                 }
             return {
-                "action": "discard",
-                "hand": best_discard["hand"]
+                "action": "play",
+                "hand": best_hand["hand"]
             }
 
         # If everything fails, then this means we lose or screwed up. This is the losing hand
