@@ -416,31 +416,74 @@ class Controller:
         voucher_amount = bonuses["vouchers"]
         pack_amount = 2
 
+        # Screenshot
+        area = (int(self.balatro.width / 1920 * 370), int(self.balatro.width / 1920 * 400), int(self.balatro.width / 1920 * 1920), int(self.balatro.width / 1920 * 1080))
+        screenshot = pag.screenshot(region=area)
+        screenshot.save("screenshot.png")
+
         # Get consumables
-        area = (0, 0, 0, 0)
-        width = area[2] - area[0]
-        for i in range(consumable_amount):
-            consumable = None
-            self.consumable.append(consumable)
+        best = []
+        for consum in os.listdir("openCVData/consumables"):
+            img = cv.imread("openCVData/consumables/" + consum, 0)
+            check = cv.imread("screenshot.png", 0)
+            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+            best.append([consum, result])
+        best.sort(key=lambda x: x[1]).reverse()
+        self.consumable.append(best[:consumable_amount])
         
         # Get vouchers
-        area = (0, 0, 0, 0)
-        width = area[2] - area[0]
-        for i in range(voucher_amount):
-            voucher = None
-            self.vouchers.append(voucher)
+        best = []
+        for vouch in os.listdir("openCVData/vouchers"):
+            img = cv.imread("openCVData/vouchers/" + vouch, 0)
+            check = cv.imread("screenshot.png", 0)
+            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+            best.append([vouch, result])
+        best.sort(key=lambda x: x[1]).reverse()
+        self.vouchers.append(best[:voucher_amount])
 
         # Get packs
-        area = (0, 0, 0, 0)
-        width = area[2] - area[0]
-        for i in range(pack_amount):
-            pack = None
-            self.packs.append(pack)
+        best = []
+        for pack in os.listdir("openCVData/packs"):
+            img = cv.imread("openCVData/packs/" + pack, 0)
+            check = cv.imread("screenshot.png", 0)
+            result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+            best.append([pack, result])
+        best.sort(key=lambda x: x[1]).reverse()
+        self.packs.append(best[:pack_amount])
     
         return self.consumable + self.vouchers + self.packs
 
     def select_shop_item(self, item, index):
-        pass
+        
+        start = [916, 554]
+        distance = 1416 - 916
+        if len(self.consumable) % 1 == 0:
+            start[0] += distance / self.consumable
+        for index, value in enumerate(self.consumable):
+            if value in item:
+                self.move_mouse(start[0] + (distance + index), start[1])
+                self.click(start[0] + (distance + index), start[1])
+                item.remove(value)
+
+        start = [752, 894]
+        distance = 944 - 752
+        if len(self.vouchers) % 1 == 0:
+            start[0] += distance / self.vouchers
+        for index, item in enumerate(self.vouchers):
+            if value in item:
+                self.move_mouse(start[0] + (distance + index), start[1])
+                self.click(start[0] + (distance + index), start[1])
+                item.remove(value)
+
+        start = [1184, 882]
+        distance = 1372 - 1184
+        if len(self.packs) % 1 == 0:
+            start[0] += distance / self.packs
+        for index, value in enumerate(self.packs):
+            if value in item:
+                self.move_mouse(start[0] + (distance + index), start[1])
+                self.click(start[0] + (distance + index), start[1])
+                item.remove(value)
 
 if __name__ == "__main__":
     controller = Controller()
