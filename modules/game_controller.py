@@ -487,6 +487,52 @@ class Controller:
                 self.click(start[0] + (distance + index), start[1])
                 item.remove(value)
 
+    def get_pack_items(self, pack):
+        start = [0, 0]
+        distance = 0
+        match pack:
+            case "arcana_pack": pack_type = [1, 3, "tarot"]
+            case "jumbo_arcana_pack": pack_type = [1, 5, "tarot"]
+            case "mega_arcana_pack": pack_type = [2, 5, "tarot"]
+            case "celestial_pack": pack_type = [1, 3, "celestial"]
+            case "jumbo_celestial_pack": pack_type = [1, 5, "celestial"]
+            case "mega_celestial_pack": pack_type = [2, 5, "celestial"]
+            case "standard_pack": pack_type = [1, 3, "card"]
+            case "jumbo_standard_pack": pack_type = [1, 5, "card"]
+            case "mega_standard_pack": pack_type = [2, 5, "card"]
+            case "baffon_pack": pack_type = [1, 2, "joker"]
+            case "jumbo_baffon_pack": pack_type = [1, 4, "joker"]
+            case "mega_baffon_pack": pack_type = [2, 4, "joker"]
+            case "spectral_pack": pack_type = [1, 2, "spectral"]
+            case "jumbo_spectral_pack": pack_type = [1, 4, "spectral"]
+            case "mega_spectral_pack": pack_type = [2, 4, "spectral"]
+
+        self.pack_options = []
+        for i in range(pack_type[1]):
+            best = []
+            for item in os.listdir(f"openCVData/{pack_type[2]}s"):
+                img = cv.imread(f"openCVData/{pack_type[2]}s/" + item, 0)
+                check = cv.imread("screenshot.png", 0)
+                result = cv.matchTemplate(img, check, cv.TM_CCOEFF_NORMED).max()
+                if result > best[1]:
+                    best = [item, result]
+
+        return {
+            "pack_options": self.pack_options,
+            "choice_amount": pack_type[0],
+            "type": pack_type[2]
+        }
+
+    def select_pack_item(self, items):
+        start = [0, 0]
+        distance = 0
+        for index, choice in enumerate(self.pack_options):
+            if choice in items:
+                self.move_mouse(start[0] + (distance + index), start[1])
+                self.click(start[0] + (distance + index), start[1])
+                items.remove(choice)
+        
+
 if __name__ == "__main__":
     controller = Controller()
     # controller.resize_window(1920, 1080)
