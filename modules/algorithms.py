@@ -266,7 +266,7 @@ class Algorithm:
         print(hand)
         money = 0
         # Figures out hand type and active cards
-        values = [0] * 14
+        values = [0] * 15
         suits = [0] * 5
         for card in hand:
             card = self.identify_card(card)
@@ -277,22 +277,28 @@ class Algorithm:
         # print(values)
         # print(suits)
 
+        fingers = 5
         shortcut = False
         for joker in self.jokers:
-            if joker["name"] == "shortcut":
-                shortcut = True
+            match joker["name"]:
+                case "shortcut":
+                    shortcut = True
+                case "four_fingers":
+                    fingers = 4
+                case _:
+                    pass
 
         # Check if it's a flush at all
         straight = False
-        for i in range(1, 10):
-            if values[i] == 1 and values[i + 1] == 1 and values[i + 2] == 1 and values[i + 3] == 1 and values[i + 4] == 1:
+        for i in range(1, 11):
+            if values[i] == 1 and values[i + 1] == 1 and values[i + 2] == 1 and values[i + 3] == 1 and (values[i + 4] == 1 or fingers == 4):
                 straight = True
         if shortcut: # CHECK IF CURRENTLY HAVE SHORTCUT
             offset = 0
-            for i in range(1, 10):
+            for i in range(1, 11):
                 offset = 0
                 if not check:
-                    for j in range(0, 5):
+                    for j in range(0, fingers):
                         check = True
                         if values[i + j + offset] == 1:
                             pass
@@ -303,7 +309,7 @@ class Algorithm:
                             check = False
 
         flush = False
-        if 5 in suits:
+        if fingers in suits:
             flush = True
 
         # Check for flush five
@@ -596,7 +602,12 @@ class Algorithm:
             for joker in self.jokers:
                 match joker["name"]:
                     case "raised_fist":
-                        pass
+                        lowest = 14
+                        if len(non_active_cards) == 0:
+                            continue
+                        for card in non_active_cards:
+                            if self.identify_card(card)["value"] < lowest:
+                                lowest = self.identify_card(card)["value"]
                     case "baron":
                         for card in non_active_hand:
                             if card[0] == "H":
@@ -650,7 +661,11 @@ class Algorithm:
                     if len(active_cards) >= 3:
                         multiplier += 20
                 case "joker_stencil":
-                    multiplier *= (self.max_jokers - len(self.jokers) + 1)
+                    total = 1 # 1 is for the joker itself
+                    for joker in self.jokers:
+                        if joker["name"] == "joker_stencil":
+                            total += 1
+                    multiplier *= self.max_jokers - len(self.jokers) + total
                 case "banner":
                     value += self.current_discards * 30
                 case "mystic_summit":
@@ -894,6 +909,14 @@ class Algorithm:
                     if self.jokers[index - offset]["value"] <= 0:
                         self.jokers.pop(index- offset)
                         offset += 1
+                case "vampire":
+                    new_hand = []
+                    for card in hand:
+                        new_card = card
+                        if card != new_card:
+                            self.jokers[index]["value"] += 0.01
+                        new_hand.append(new_card)
+                    hand = new_hand
                 case _:
                     pass
 
@@ -903,6 +926,10 @@ class Algorithm:
                     hand_level -= 1
         elif self.boss == "the_tooth":
             self.money -= len(hand)
+
+        self.discarded += hand
+
+        
 
     def post_bind_logic(self, bind_data):
         
@@ -988,9 +1015,20 @@ class Algorithm:
                     pass
 
     def aquire_joker(self, joker):
+        sell_value = self.sheet.loc[joker, "sell_value"]
         match joker:
             case "turtle_bean":
-                self.jokers.append({"name": joker, "value": 5, "sell_value": 3})
+                value = 5
+            case "steel_joker":
+                value = 1
+            case _:
+                value = 0
+
+        self.jokers.append( {
+            "name": joker,
+            "value": value,
+            "sell_value": sell_value
+        } )
 
     def get_shop_bonuses(self):
         bonuses = {
@@ -1012,12 +1050,19 @@ class Algorithm:
         return bonuses
 
     def handle_bind(self, bind_data):
+        hand = bind_data["hand"]
         current_score = bind_data["current_score"]
         bind_amount = self.current_bind_amount
 
         goal = bind_amount - current_score
 
-        best_hand = self.find_best_hand(bind_data["hand"], goal)
+        for joker in self.jokers:
+            match joker["name"]:
+                case "dna":
+                    if self.played_hands == ["high_card"]:
+                        hand.append(self.discarded[0])
+
+        best_hand = self.find_best_hand(hand, goal)
         print(best_hand)
         if best_hand["value"] >= goal:
             return {
@@ -1026,7 +1071,7 @@ class Algorithm:
                 "consume": []
             }
 
-        best_consumable_hand = self.find_best_hand_conusmable(bind_data["hand"], goal)
+        best_consumable_hand = self.find_best_hand_conusmable(hand, goal)
         if best_consumable_hand != False:
             if best_consumable_hand["value"] >= goal:
                 for consumable in best_consumable_hand["consume"]:
@@ -1041,7 +1086,7 @@ class Algorithm:
                 }
 
         if self.current_discards > 0:
-            best_discard = self.find_best_discard(bind_data["hand"], goal)
+            best_discard = self.find_best_discard(hand, goal)
             if best_discard["value"] > best_hand["value"]:
                 return {
                     "action": "discard",
@@ -1145,6 +1190,16 @@ class Algorithm:
         tarots = []
         vouchers = []
         preferences = []
+
+        self.reroll_cost = 5
+
+        for index, joker in enumerate(self.jokers):
+            match joker["name"]:
+                case "chaos_the_clown":
+                    self.jokers[index]["active"] = True
+                case _:
+                    pass
+
         for option in options:
             preferences.append(self.handle_preference(option))
             match options[type]:
@@ -1174,6 +1229,41 @@ class Algorithm:
                 buying.append(preference[0])
                 self.money -= preference[1]
 
+        if buying == []:
+            chaos_clown = False
+            cost = self.reroll_cost
+            for joker in self.jokers:
+                match joker["name"]:
+                    case "chaos_the_clown":
+                        chaos_clown = True
+                        self.jokers[index]["active"] = False
+                    case _:
+                        pass
+
+            if chaos_clown:
+                return ["reroll"]
+            if self.money / 2 >= cost:
+                return ["reroll"]
+        else:
+            for item in buying:
+                if item in jokers:
+                    self.aquire_joker(item)
+                if item in cards:
+                    self.deck.append(item)
+                if item in packs:
+                    self.current_deck += self.sheet.loc[item, "pack"]
+                if item in planets:
+                    self.current_deck += self.sheet.loc[item, "planet"]
+                    for index, joker in enumerate(self.jokers):
+                        match joker["name"]:
+                            case "constellation":
+                                self.jokers[index]["value"] += 0.1
+                            case _:
+                                pass
+                if item in tarots:
+                    self.current_deck += self.sheet.loc[item, "tarot"]
+                if item in vouchers:
+                    self.vouchers.append(item)
         return buying
 
 if __name__ == "__main__":

@@ -78,19 +78,19 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] Crafty Joker
 - [x] Half Joker
 - [x] Joker Stencil
-- [] Four Fingers
+- [x] Four Fingers
 - [x] Mime
-- [] Credit Card
+- [] Credit Card (Just no?)
 - [x] Ceremonial Dagger
 - [x] Banner
 - [x] Mystic Summit
 - [x] Marble Joker
 - [x] Loyalty Card
-- [] 8 Ball
+- [x] 8 Ball (Nothing Needed)
 - [x] Misprint
 - [x] Dusk
-- [] Raised Fist
-- [] Chaos the Clown
+- [x] Raised Fist
+- [x] Chaos the Clown
 - [x] Fibonacci
 - [x] Steel Joker
 - [x] Scary Face
@@ -111,7 +111,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] Blackboard
 - [x] Runner
 - [x] Ice Cream
-- [] DNA
+- [x] DNA
 - [x] Splash
 - [x] Blue Joker
 - [x] Sixth Sense
@@ -128,7 +128,7 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] Square Joker
 - [] Séance
 - [] Riff-Raff
-- [] Vampire
+- [x] Vampire
 - [x] Shortcut (Need to add check for if joker)
 - [x] Hologram
 - [] Vagabond
