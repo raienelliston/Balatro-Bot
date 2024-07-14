@@ -101,6 +101,20 @@ def main():
 
                     case "shop":
                         print("Shop")
+
+                        get_shop_bonuses = algorithm.get_shop_bonuses()
+                        shop_items = controller.get_shop_items(get_shop_bonuses)
+                        shop_changes = algorithm.handle_shop(shop_items)
+                        
+                        for item in shop_changes:
+                            if item["action"] == "buy":
+                                controller.buy(item["name"], shop_items)
+                            elif item["action"] == "skip":
+                                controller.sell(item["name"], shop_items)
+                            else:
+                                print("Unknown Shop Action")
+                        
+                        controller.click(800, 975)
                     case _:
                         print("Unknown Screen")
                         # isDone = True

@@ -407,8 +407,40 @@ class Controller:
             "consumables": consumables,
         }
 
+    def get_shop_items(self, bonuses):
+        self.consumable = []
+        self.vouchers = []
+        self.packs = []
 
+        consumable_amount = bonuses["consumables"]
+        voucher_amount = bonuses["vouchers"]
+        pack_amount = 2
 
+        # Get consumables
+        area = (0, 0, 0, 0)
+        width = area[2] - area[0]
+        for i in range(consumable_amount):
+            consumable = None
+            self.consumable.append(consumable)
+        
+        # Get vouchers
+        area = (0, 0, 0, 0)
+        width = area[2] - area[0]
+        for i in range(voucher_amount):
+            voucher = None
+            self.vouchers.append(voucher)
+
+        # Get packs
+        area = (0, 0, 0, 0)
+        width = area[2] - area[0]
+        for i in range(pack_amount):
+            pack = None
+            self.packs.append(pack)
+    
+        return self.consumable + self.vouchers + self.packs
+
+    def select_shop_item(self, item, index):
+        pass
 
 if __name__ == "__main__":
     controller = Controller()

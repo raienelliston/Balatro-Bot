@@ -922,6 +922,25 @@ class Algorithm:
             case "turtle_bean":
                 self.jokers.append({"name": joker, "value": 5, "sell_value": 3})
 
+    def get_shop_bonuses(self):
+        bonuses = {
+            "consumables": 2,
+            "vouchers": 1,
+        }
+
+        for index, tag in self.tags:
+            if tag["name"] == "voucher":
+               if tag["active"] == True:
+                    bonuses["vouchers"] += 1
+                    self.tags[index]["active"] = False 
+        
+        if "overstock" in self.vouchers:
+            bonuses["consumables"] += 1
+            if "overstock_plus" in self.vouchers:
+                bonuses["consumables"] += 1
+    
+        return bonuses
+
     def handle_bind(self, bind_data):
         current_score = bind_data["current_score"]
         bind_amount = self.current_bind_amount
