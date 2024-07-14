@@ -37,12 +37,13 @@ class Algorithm:
         self.consumables = []
         self.max_consumables = 2
         self.vouchers = []
-        self.deck = deck
         self.current_bind = 1
         self.current_bind_type = "small"
         self.current_bind_amount = 300
         self.boss = None
+        self.deck_type = deck
         self.stake = stake_list.index(stake)
+        self.buying_preference = []
         self.hand_values = [
             {"name": "flush_five", "value": 160, "multiplier": 16, "played": 0},
             {"name": "flush_house", "value": 140, "multiplier": 14, "played": 0},
@@ -834,7 +835,9 @@ class Algorithm:
 
     def post_hand_logic(self, hand, hand_type):
             
-        self.played_hands.append(hand_type)
+        for index, type in enumerate(self.hand_values):
+            if type["name"] == hand_type:
+                self.hand_values[index]["played"] += 1
 
         offset = 0
         for index, joker in enumerate(self.jokers):
@@ -940,7 +943,11 @@ class Algorithm:
         # Now check if the hand is a better option then the potential discards
 
     def find_value(self, item, type):
-        value = self.sheet.loc[item, type]
+        try:
+            value = self.sheet.loc[item, type]
+        except KeyError:
+            return 0
+
         if type == "cost" or type =="sell_value": # For voucher logic
             if "clearacne_sale" in self.vouchers:
                 value *= 0.75
@@ -950,9 +957,30 @@ class Algorithm:
         return int(value)
 
     def handle_preference(self, select_item):
+        
+        self.favorite_hand = self.hand_values[11]
+        for type in self.hand_values:
+            if type["played"] > self.favorite_hand["played"]:
+                self.favorite_hand = type
 
-        check_items = ["base_worth"]
+        check_items = ["base_worth", self.favorite_hand["name"], self.deck_type, self.stake]
         check_items += self.jokers + self.consumables + self.vouchers
+        
+        # Add most played card if certain hand types is most played
+        if self.favorite_hand["name"] in ["flush_five", "five_of_a_kind", "four_of_a_kind", "three_of_a_kind", "pair"]:
+            card_value = [] * 14
+            for card in self.current_deck:
+                card_value[self.identify_card(card)["value"]] += 1
+            check_items.append(reversed(card_value).index(max(card_value)))
+        
+        # Add most played suit if certain hand types is most played
+        if self.favorite_hand["name"] in ["flush_five", "flush_house", "flush"]:
+            suit_value = [] * 5
+            for card in self.current_deck:
+                if "W" in card: # wild cards count for everything
+                    continue
+                suit_value[self.identify_card(card)["suit"]] += 1
+            check_items.append(reversed(suit_value).index(max(suit_value)))
 
         select_item_worth = 0
 
@@ -960,24 +988,34 @@ class Algorithm:
         mult_worth = self.sheet.loc[select_item, "mult_worth"]
 
         type = self.sheet.loc[select_item, "type"]
-        
-        if type.find("Muti") != -1: # Checks if the item is a multiplier increaser
-            pass
-        if type.find("Chip") != -1: # Checks if the item is a chip increaser
-            pass
-        if type.find("Money") != -1: # Checks if the item is a money increaser
-            pass
 
+        # Find the value of all the items
         for item in check_items:
             value = self.sheet.loc[select_item, item]
             match value:
                 case "Auto No":
-                    return 0
+                    return -99
                 case "Auto Yes":
                     select_item_worth == 99
                     return select_item_worth
                 case _:
                     select_item_worth += value
+
+        # Change the weight of the item based on the type
+        weight = 2
+        if type.find("Muti*") != -1: # Checks if the item is a multiplier multiplier
+            if 'muli_multiplier' in self.buying_preference:
+                select_item_worth += weight
+        if type.find("Mult+") != -1: # Checks if the item is a multiplier increaser
+            if 'mult_increase' in self.buying_preference:
+                select_item_worth += weight
+        if type.find("Chip") != -1: # Checks if the item is a chip increaser
+            if 'chip_increase' in self.buying_preference:
+                select_item_worth += weight
+        if type.find("Money") != -1: # Checks if the item is a money increaser
+            if 'money_increase' in self.buying_preference:
+                select_item_worth += weight
+
 
         return [select_item, select_item_worth]
 
@@ -1010,14 +1048,16 @@ class Algorithm:
                     exit()
         
         for preference in preferences:
-            if 
+            if preference[1] > self.money:
+                preferences.remove(preference)
+            
+        buying = []
+        for preference in preferences:
+            if preference[1] <= self.money:
+                buying.append(preference[0])
+                self.money -= preference[1]
 
-        
-
-        
-
-        
-        
+        return buying
 
 if __name__ == "__main__":
     algo = Algorithm("red_deck", "red_stake", None)
