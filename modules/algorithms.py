@@ -283,6 +283,9 @@ class Algorithm:
                     shortcut = True
                 case "four_fingers":
                     fingers = 4
+                case "smeared_joker":
+                    for i in range(4):
+                        suits[i + 1] += suits[4 - i]
                 case _:
                     pass
 
@@ -314,10 +317,14 @@ class Algorithm:
         if flush and 5 in values:
             active_cards = hand
             hand_type = "flush_five"
+            if fingers == 4:
+                hand_type = value
         # Check for flush house
         elif flush and 3 in values and 2 in values:
             active_cards = hand
             hand_type = "flush_house"
+            if fingers == 4:
+                pass
         # Check for five of a kind
         elif 5 in values:
             active_cards = hand
@@ -327,6 +334,8 @@ class Algorithm:
             if straight:
                 active_cards = hand
                 hand_type = "straight_flush"
+            if fingers == 4:
+                pass
         # Check for four of a kind
             elif 4 in values:
                 cards = []
@@ -347,6 +356,8 @@ class Algorithm:
         elif straight:
             active_cards = hand
             hand_type = "straight"
+            if fingers == 4:
+                pass
         # Check for three of a kind
         elif 3 in values:
             cards = []
@@ -590,6 +601,12 @@ class Algorithm:
                         case "buisness_card":
                             if face_card:
                                 money += 1
+                        case "reserved_parking":
+                            if face_card:
+                                money += 0.5
+                        case "golden_ticket":
+                            if card[2] == "G":
+                                money += 4
                         case _:
                             pass
 
@@ -801,6 +818,12 @@ class Algorithm:
                             check = False
                     if check:
                         multiplier *= 3
+                case "to_do_list":
+                    if hand_type == joker["value"]:
+                        money += 4
+                case "vagabond":
+                    if self.money <= 4:
+                        money += 4
                 case _:
                     pass
 
@@ -816,7 +839,8 @@ class Algorithm:
         return {
             "value": value * multiplier,
             "hand": hand,
-            "type": hand_type
+            "type": hand_type,
+            "money": money
         }
 
     def pre_bind_logic(self, bind_data):
@@ -928,6 +952,18 @@ class Algorithm:
                         if card[1] in ["J", "Q", "K"] or face_card:
                             hand.remove(card)
                             hand.append(card[:2] + "F" + card[3:])
+                case "seltzer":
+                    self.jokers[index]["value"] -= 1
+                    if self.jokers[index]["value"] <= 0:
+                        self.jokers.pop(index)
+                        offset += 1
+                case "spare_trousers":
+                    if hand_type == "pair":
+                        self.jokers[index]["value"] += 2
+                case "golden_ticket":
+                    for card in hand:
+                        if card[2] == "G":
+                            self.money += 4
                 case _:
                     pass
 
@@ -944,8 +980,9 @@ class Algorithm:
         
         self.current_deck += self.discarded
     
-
+        offset = 0
         for index, joker in enumerate(self.jokers):
+            index -= offset
             match joker["name"]:
                 case "delayed_gratification":
                     if self.current_discards == self.discards:
@@ -960,6 +997,14 @@ class Algorithm:
                     for card in self.current_deck:
                         if card[1] == "9":
                             self.money += 1
+                case "popcorn":
+                    self.jokers[index]["value"] -= 4
+                    if self.jokers[index]["value"] <= 0:
+                        self.jokers.pop(index)
+                        offset += 1
+                case "campfire":
+                    if self.current_bind_type == "boss":
+                        self.jokers[index]["value"] = 1
                 case _:
                     pass
 
@@ -1243,11 +1288,13 @@ class Algorithm:
         if buying == []:
             chaos_clown = False
             cost = self.reroll_cost
-            for joker in self.jokers:
+            for index, joker in enumerate(self.jokers):
                 match joker["name"]:
                     case "chaos_the_clown":
                         chaos_clown = True
                         self.jokers[index]["active"] = False
+                    case "flash_card":
+                        self.jokers[index]["value"] += 2
                     case _:
                         pass
 
