@@ -1359,15 +1359,16 @@ class Algorithm:
     def handle_pack(self, pack_info):
         options = pack_info["options"]
         type = pack_info["type"]
+        card_choices = pack_info["cards"]
         valued_options = []
         for option in options:
             valued_options.append(self.handle_preference(option))
 
         match type:
             case "spectral":
-                valued_options = self.select_spectral(valued_options)
+                valued_options = self.select_spectral(valued_options, card_choices)
             case "tarot":
-                valued_options = self.select_tarot(valued_options)
+                valued_options = self.select_tarot(valued_options, card_choices)
             case _:
                 pass
 
@@ -1385,55 +1386,131 @@ class Algorithm:
 
         return valued_options
 
-    def select_spectral(self, options):
-        pass
+    def select_spectral(self, options, card_choices):
+        values = [] * 14
+        suits = [] * 5
+        for card in self.current_deck:
+            values[self.identify_card(card)["value"]] += 1
+            suits[self.identify_card(card)["suit"]] += 1
 
-    def select_tarot(self, options):
+        open_seal_cards = 0
+        for card in card_choices:
+            try:
+                if card[3] == "N":
+                    open_seal_cards += 1
+            except IndexError:
+                open_seal_cards += 1
+
+        open_edition_cards = 0
+        for card in card_choices:
+            try:
+                if card[4] == "N":
+                    open_edition_cards += 1
+            except IndexError:
+                open_edition_cards +=
+
+
+        for option in options:
+            match option:
+                case "familiar": # Removes if too many in non-royal cards
+                    if values.max() > 10 and (not values[13] > 10 or not values[12] > 10 or not values[11] > 10):
+                        options.remove(option)
+                case "grim": # Removes if too many that aren't aces
+                    if values.max() > 6 and not values[0] > 6:
+                        options.remove(option)
+                case "incantation": # Removes if too many cards in a single rank
+                    if values.max() > 10:
+                        options.remove(option)
+                case "talisman":
+                    if open_seal_cards == 0:
+                        options.remove(option)
+                case "aura":
+                    if open_edition_cards == 0:
+                        options.remove(option)
+                case "wraith":
+                    if self.money > 7 or len(self.jokers) >= self.max_jokers:
+                        options.remove(option)
+                case "sigil":
+                    if suits.max() > 15:
+                        options.remove(option)
+                case "ouija":
+                    if values.max() > 6:
+                        options.remove(option)
+                case "ectoplasm":
+                    if self.jokers == [] or self.get_hands() <= 2:
+                        options.remove(option)
+                case "immolate":
+                    pass
+                case "ankh":
+                    if self.max_jokers - len(self.jokers) <= 2:
+                        options.remove(option)
+                case "deja_vu":
+                    if open_seal_cards == 0:
+                        options.remove(option)
+                case "hex":
+                    if len(self.jokers) <= 2:
+                        options.remove(option)
+                case "trance" | "medium":
+                    if open_seal_cards == 0:
+                        options.remove(option)
+                case "cryptid":
+                    pass
+                case "soul":
+                    pass
+                case "black_hole":
+                    pass
+
+    def select_tarot(self, options, card_choices):
 
         suits = [] * 5
         for card in self.current_deck:
             suits[self.identify_card(card)["suit"]] += 1
 
+        open_enhanched_cards = 0
+        for card in card_choices:
+            try:
+                if card[2] == "N":
+                    open_enhanched_cards += 1
+            except IndexError:
+                open_enhanched_cards += 1
+
         for option in options:
             match option:
                 case "the_fool":
                     pass
-                case "the_magician":
-                    pass
-                case "the_high_priestess":
-                    pass
-                case "the_empress":
-                    pass
-                case "the_emperor":
-                    pass
-                case "the_hierophant":
-                    pass
-                case "the_lovers":
-                    pass
-                case "the_chariot":
-                    pass
-                case "strength":
-                    pass
+                case "the_magician" | "the_empress" | "the_hierophant" | "the_lovers" | "the_chariot" | "justice":
+                    if open_enhanched_cards <= 2:
+                        options.remove(option)
+                case "the_high_priestess" | "the_emperor":
+                    if len(self.consumables) >= self.max_consumables - 1:
+                        options.remove(option)
                 case "the_hermit":
-                    pass
+                    if self.money <= 5:
+                        options.remove(option)
                 case "wheel_of_fortune":
-                    pass
-                case "justice":
-                    pass
-                case "the_hermit":
-                    pass
-                case "the_wheel_of_fortune":
-                    pass
+                    if len(self.jokers) < 0:
+                        options.remove(option)
                 case "strength":
-                    pass
+                    best_rank = suits.index(suits.max())
+                    strength_options = []
+                    for card in card_choices:
+                        if self.identify_card(card)["suit"] == best_rank - 1:
+                            strength_options.append(card)
+                    if strength_options == []:
+                        options.remove(option)
                 case "the_hanged_man":
                     pass
                 case "death":
                     pass
                 case "temperance":
-                    pass
+                    sell_value = 0
+                    for joker in self.jokers:
+                        sell_value += joker["sell_value"]
+                    if sell_value <= 10:
+                        options.remove(option)
                 case "the_devil":
-                    pass
+                    if open_enhanched_cards < 1:
+                        options.remove(option)
                 case "the_tower":
                     pass
                 case "the_star": # Diamonds

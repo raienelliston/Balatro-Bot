@@ -517,10 +517,18 @@ class Controller:
                 if result > best[1]:
                     best = [item, result]
 
+        cards = []
+        if pack_type[2] in ["tarot", "spectral"]:
+            start = [0, 0]
+            distance = 0
+            interval = distance / 8
+
+
         return {
             "pack_options": self.pack_options,
             "choice_amount": pack_type[0],
-            "type": pack_type[2]
+            "type": pack_type[2],
+            "cards": cards
         }, 
 
     def select_pack_item(self, items):
