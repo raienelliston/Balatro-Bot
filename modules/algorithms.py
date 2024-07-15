@@ -275,9 +275,26 @@ class Algorithm:
         # print(values)
         # print(suits)
 
+        jokers = self.jokers
+        for index, joker in enumerate(jokers):
+            match joker["name"]:
+                case "blueprint":
+                    if index == len(jokers) - 1:
+                        continue
+                    joker = jokers[index + 1]
+                    joker[index]["value"] = self.sheet.loc[self.sheet["name"] == joker["value"]]["value"]
+                case "brainstorm":
+                    if index == 0:
+                        continue
+                    joker = jokers[0]
+                    joker[index]["value"] = self.sheet.loc[self.sheet["name"] == joker["value"]]["value"]
+                case _:
+                    pass
+
+        disable_boss = False
         fingers = 5
         shortcut = False
-        for joker in self.jokers:
+        for joker in jokers:
             match joker["name"]:
                 case "shortcut":
                     shortcut = True
@@ -286,6 +303,8 @@ class Algorithm:
                 case "smeared_joker":
                     for i in range(4):
                         suits[i + 1] += suits[4 - i]
+                case "chicot":
+                    disable_boss = True
                 case _:
                     pass
 
@@ -410,7 +429,7 @@ class Algorithm:
         non_active_hand = []
 
         # Joker logic here that are for pre scoring
-        for joker in self.jokers:
+        for joker in jokers:
             match joker["name"]:
                 case "ride_the_bus":
                     joker["value"] += 1
@@ -425,18 +444,19 @@ class Algorithm:
                     joker["active"] = True
                 case _:
                     pass
-
-        match self.boss:
-            case "the_psychic":
-                return 0
-            case "the_mouth":
-                if self.played_hands == [] or not hand_type in self.played_hands:
+        
+        if not disable_boss:
+            match self.boss:
+                case "the_psychic":
                     return 0
-            case "the_eye":
-                if hand_type in self.played_hands:
-                    return 0
-            case _:
-                pass
+                case "the_mouth":
+                    if self.played_hands == [] or not hand_type in self.played_hands:
+                        return 0
+                case "the_eye":
+                    if hand_type in self.played_hands:
+                        return 0
+                case _:
+                    pass
 
         # Scores the hand
         for index in range(len(active_cards)):
@@ -445,29 +465,30 @@ class Algorithm:
 
             if card[1] == "J" or card[1] == "Q" or card[1] == "K":
                 face_card = True
-            for jokers in self.jokers:
+            for jokers in jokers:
                 if joker["name"] == "pareidolia":
                     face_card = True
 
             # Debuff logic here (Bosses)
-            match self.boss:
-                case "the_club":
-                    if active_cards[index][0] == "C":
-                        continue
-                case "the_goad":
-                    if active_cards[index][0] == "S":
-                        continue
-                case "the_window":
-                    if active_cards[index][0] == "D":
-                        continue
-                case "the_head":
-                    if active_cards[index][0] == "H":
-                        continue
-                case "the_plant":
-                    if face_card:
-                        continue
-                case _:
-                    pass
+            if not disable_boss:
+                match self.boss:
+                    case "the_club":
+                        if active_cards[index][0] == "C":
+                            continue
+                    case "the_goad":
+                        if active_cards[index][0] == "S":
+                            continue
+                    case "the_window":
+                        if active_cards[index][0] == "D":
+                            continue
+                    case "the_head":
+                        if active_cards[index][0] == "H":
+                            continue
+                    case "the_plant":
+                        if face_card:
+                            continue
+                    case _:
+                        pass
 
             if card[2] == "D":
                 continue
@@ -515,7 +536,7 @@ class Algorithm:
             # Joker logic here that are for "on played" jokers
             on_played_triggers = 1
             while on_played_triggers > 0:
-                for joker in self.jokers:
+                for joker in jokers:
                     match joker["name"]:
                         case "greedy_joker":
                             if card[0] == "D":
@@ -607,6 +628,9 @@ class Algorithm:
                         case "golden_ticket":
                             if card[2] == "G":
                                 money += 4
+                        case "rough_gem":
+                            if card[0] == "D":
+                                money += 1
                         case _:
                             pass
 
@@ -614,7 +638,7 @@ class Algorithm:
 
         # Joker logic here that are for "on held" jokers
         for card in active_cards:
-            for joker in self.jokers:
+            for joker in jokers:
                 match joker["name"]:
                     case "raised_fist":
                         lowest = 14
@@ -638,7 +662,7 @@ class Algorithm:
                         pass
 
         # Joker logic here that are for "independent" jokers
-        for joker in self.jokers:
+        for joker in jokers:
             match joker["name"]:
                 case "joker":
                     multiplier += 4
@@ -677,10 +701,10 @@ class Algorithm:
                         multiplier += 20
                 case "joker_stencil":
                     total = 1 # 1 is for the joker itself
-                    for joker in self.jokers:
+                    for joker in jokers:
                         if joker["name"] == "joker_stencil":
                             total += 1
-                    multiplier *= self.max_jokers - len(self.jokers) + total
+                    multiplier *= self.max_jokers - len(jokers) + total
                 case "banner":
                     value += self.current_discards * 30
                 case "mystic_summit":
@@ -698,7 +722,7 @@ class Algorithm:
                             pass
                     multiplier *= mult + 1
                 case "abstract_joker":
-                    multiplier += 3 * len(self.jokers)
+                    multiplier += 3 * len(jokers)
                 case "gros_miichel":
                     multiplier += 15
                 case "supernova":
@@ -749,7 +773,7 @@ class Algorithm:
                         if card[0] == "R":
                             value += 25
                 case "baseball_card":
-                    for joker in self.jokers:
+                    for joker in jokers:
                         if joker["rarirty"] == "U":
                             multiplier *= 1.5
                 case "bull":
@@ -767,7 +791,7 @@ class Algorithm:
                         multiplier *= 3
                 case "swashbuckler":
                     amount = 0
-                    for joker in self.jokers:
+                    for joker in jokers:
                         amount += joker["sell_value"]
                     multiplier += amount
                 case "flower_pot":
@@ -828,7 +852,7 @@ class Algorithm:
                     pass
 
         # Applies bonuses from joker editions and types
-        for joker in self.jokers:
+        for joker in jokers:
             match joker['edition']:
                 case "F":
                     value += 50
@@ -1005,6 +1029,8 @@ class Algorithm:
                 case "campfire":
                     if self.current_bind_type == "boss":
                         self.jokers[index]["value"] = 1
+                case "satalite":
+                    self.money += self.jokers[index]["value"]
                 case _:
                     pass
 
