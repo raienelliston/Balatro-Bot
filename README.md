@@ -140,9 +140,9 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] Luchador
 - [x] Photograph (Need to add set_false at begining of bind)
 - [] Gift Card
-- [] Turtle Bean
+- [x] Turtle Bean
 - [x] Erosion
-- [] Reserved Parking
+- [x] Reserved Parking (Chance based)
 - [] Mail-In Rebate
 - [] To the Moon
 - [] Hallucination

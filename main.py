@@ -109,6 +109,10 @@ def main():
                         for item in shop_changes:
                             if item["action"] == "buy":
                                 controller.buy(item["name"], shop_items)
+                                if item["type"] == "pack":
+                                    pack_content = controller.get_pack_items()
+                                    pack_choices = algorithm.handle_pack(pack_content)
+                                    controller.select_pack_items(pack_choices)
                             elif item["action"] == "skip":
                                 controller.sell(item["name"], shop_items)
                             else:

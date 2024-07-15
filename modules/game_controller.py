@@ -124,7 +124,7 @@ class Controller:
         if area == None:
             area = (0, 0, self.balatro.width, self.balatro.height)
 
-    def select_cards(self, hand, type, click=False, hand_size=0, consume):
+    def select_cards(self, hand, type, click=False, hand_size=0, consume=False):
         if consume:
             pass
 
