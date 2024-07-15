@@ -8,11 +8,11 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 
 ### Core
 - [x] Starting a run
-- [] Selecting a hand in a bind
-- [] Selecting cards to discard
-- [] Buying from the shop
-- [] Choosing items from packs
-- [] Selecting bind or tag
+- [x] Selecting a hand in a bind
+- [x] Selecting cards to discard
+- [x] Buying from the shop
+- [x] Choosing items from packs
+- [x] Selecting bind or tag
 
 ### Card Types
 - [x] Regular Cards

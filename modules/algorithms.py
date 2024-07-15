@@ -1356,10 +1356,20 @@ class Algorithm:
                     self.vouchers.append(item)
         return buying
 
-    def handle_pack(self, options):
+    def handle_pack(self, pack_info):
+        options = pack_info["options"]
+        type = pack_info["type"]
         valued_options = []
         for option in options:
             valued_options.append(self.handle_preference(option))
+
+        match type:
+            case "spectral":
+                valued_options = self.select_spectral(valued_options)
+            case "tarot":
+                valued_options = self.select_tarot(valued_options)
+            case _:
+                pass
 
         valued_options = valued_options.sort(key=lambda x: x[1], reverse=True)
 
@@ -1375,6 +1385,123 @@ class Algorithm:
 
         return valued_options
 
+    def select_spectral(self, options):
+        pass
+
+    def select_tarot(self, options):
+
+        suits = [] * 5
+        for card in self.current_deck:
+            suits[self.identify_card(card)["suit"]] += 1
+
+        for option in options:
+            match option:
+                case "the_fool":
+                    pass
+                case "the_magician":
+                    pass
+                case "the_high_priestess":
+                    pass
+                case "the_empress":
+                    pass
+                case "the_emperor":
+                    pass
+                case "the_hierophant":
+                    pass
+                case "the_lovers":
+                    pass
+                case "the_chariot":
+                    pass
+                case "strength":
+                    pass
+                case "the_hermit":
+                    pass
+                case "wheel_of_fortune":
+                    pass
+                case "justice":
+                    pass
+                case "the_hermit":
+                    pass
+                case "the_wheel_of_fortune":
+                    pass
+                case "strength":
+                    pass
+                case "the_hanged_man":
+                    pass
+                case "death":
+                    pass
+                case "temperance":
+                    pass
+                case "the_devil":
+                    pass
+                case "the_tower":
+                    pass
+                case "the_star": # Diamonds
+                    if not suits.max() > 13 or suits[2] < 13:
+                        options.remove(option)
+                case "the_moon": # Clubs
+                    if not suits.max() > 13 or suits[1] < 13:
+                        options.remove(option)
+                case "the_sun": # Hearts
+                    if not suits.max() > 13 or suits[3] < 13:
+                        options.remove(option)
+                case "judgement":
+                    if len(self.jokers) >= self.max_jokers:
+                        options.remove(option)
+                case "the_world": # Spades
+                    if not suits.max() > 13 or suits[4] < 13:
+                        options.remove(option)
+
+    def skip_blind(self, tag):
+        match tag:
+            case "uncommon":
+                return False
+            case "rare":
+                return False
+            case "negative":
+                return True
+            case "foil":
+                return False
+            case "holographic":
+                return False
+            case "polychrome":
+                return False
+            case "investment":
+                return False
+            case "voucher":
+                return False
+            case "boss":
+                return False
+            case "standard":
+                return False
+            case "charm":
+                return False
+            case "meteor":
+                return False
+            case "buffoon":
+                return False
+            case "handy":
+                return False
+            case "garbage":
+                return True
+            case "ethereal":
+                return False
+            case "coupon":
+                return False
+            case "double":
+                return False
+            case "jungle":
+                return False
+            case "d6":
+                return False
+            case "top-up":
+                return False
+            case "speed":
+                return False
+            case "oribital":
+                return False
+            case "economy":
+                return False
 
 
 if __name__ == "__main__":

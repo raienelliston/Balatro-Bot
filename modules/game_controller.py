@@ -521,7 +521,7 @@ class Controller:
             "pack_options": self.pack_options,
             "choice_amount": pack_type[0],
             "type": pack_type[2]
-        }
+        }, 
 
     def select_pack_item(self, items):
         start = [0, 0]
