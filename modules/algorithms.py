@@ -1366,9 +1366,9 @@ class Algorithm:
 
         match type:
             case "spectral":
-                valued_options = self.select_spectral(valued_options, card_choices)
+                valued_options, card_choices = self.select_spectral(valued_options, card_choices)
             case "tarot":
-                valued_options = self.select_tarot(valued_options, card_choices)
+                valued_options, card_choices = self.select_tarot(valued_options, card_choices)
             case _:
                 pass
 
@@ -1387,6 +1387,9 @@ class Algorithm:
         return valued_options
 
     def select_spectral(self, options, card_choices):
+        card_choices = []
+        card_select_options = []
+
         values = [] * 14
         suits = [] * 5
         for card in self.current_deck:
@@ -1409,6 +1412,26 @@ class Algorithm:
             except IndexError:
                 open_edition_cards +=
 
+        def get_pack_options(index_check, amount):
+            options = []
+            for card in card_choices:
+                try:
+                    card[index_check] == "N"
+                    continue
+                except IndexError:
+                    pass
+                if values.index(values.max()) > 6:
+                    options.append(card)
+                elif suits.index(suits.max()) > 15:
+                    options.append(card)
+                else:
+                    card_target = "C2"
+                    for card in card_choices:
+                        if self.identify_card(card)["value"] > self.identify_card(card_target)["value"]:
+                            card_target = card
+                    options.append(card_target)
+            options.sort(key=lambda x: self.identify_card(x)["value"], reverse=True)
+            return options[:amount]
 
         for option in options:
             match option:
@@ -1424,9 +1447,15 @@ class Algorithm:
                 case "talisman":
                     if open_seal_cards == 0:
                         options.remove(option)
+                        continue
+
+                    card_select_options.append(["talisman", get_pack_options(3, 1)])
                 case "aura":
                     if open_edition_cards == 0:
                         options.remove(option)
+                        continue
+                    
+                    card_select_options.append(["aura", get_pack_options(4, 1)])
                 case "wraith":
                     if self.money > 7 or len(self.jokers) >= self.max_jokers:
                         options.remove(option)
@@ -1447,12 +1476,24 @@ class Algorithm:
                 case "deja_vu":
                     if open_seal_cards == 0:
                         options.remove(option)
+                        continue
+
+                    card_select_options.append(["deja_vu", get_pack_options(3, 1)])
                 case "hex":
                     if len(self.jokers) <= 2:
                         options.remove(option)
-                case "trance" | "medium":
+                case "trance":
                     if open_seal_cards == 0:
                         options.remove(option)
+                        continue
+
+                    card_select_options.append(["trance", get_pack_options(3, 1)])
+                case "medium":
+                    if open_seal_cards == 0:
+                        options.remove(option)
+                        continue
+
+                    card_select_options.append(["medium", get_pack_options(3, 1)])
                 case "cryptid":
                     pass
                 case "soul":
@@ -1460,11 +1501,16 @@ class Algorithm:
                 case "black_hole":
                     pass
 
+        return options, card_select_options
+
     def select_tarot(self, options, card_choices):
+        card_choices = []
 
         suits = [] * 5
+        values = [] * 14
         for card in self.current_deck:
             suits[self.identify_card(card)["suit"]] += 1
+            values[self.identify_card(card)["value"]] += 1
 
         open_enhanched_cards = 0
         for card in card_choices:
@@ -1473,6 +1519,27 @@ class Algorithm:
                     open_enhanched_cards += 1
             except IndexError:
                 open_enhanched_cards += 1
+
+        def get_pack_options(index_check, amount):
+            options = []
+            for card in card_choices:
+                try:
+                    card[index_check] == "N"
+                    continue
+                except IndexError:
+                    pass
+                if values.index(values.max()) > 6:
+                    options.append(card)
+                elif suits.index(suits.max()) > 15:
+                    options.append(card)
+                else:
+                    card_target = "C2"
+                    for card in card_choices:
+                        if self.identify_card(card)["value"] > self.identify_card(card_target)["value"]:
+                            card_target = card
+                    options.append(card_target)
+            options.sort(key=lambda x: self.identify_card(x)["value"], reverse=True)
+            return options[:amount]
 
         for option in options:
             match option:
@@ -1528,6 +1595,8 @@ class Algorithm:
                 case "the_world": # Spades
                     if not suits.max() > 13 or suits[4] < 13:
                         options.remove(option)
+
+        return options, card_choices
 
     def skip_blind(self, tag):
         match tag:
