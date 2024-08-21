@@ -1,32 +1,42 @@
 # Balatro-Bot
-Bot that is designed to beat the card gambling roguelike game by Playstick Games, Balatro
+A bot/script that's designed to beat the card gambling roguelike game by Playstick Games, Balatro. The purpose of creating this is to have a main project for me to learn more algorithms, have something to attempt to make more efficient, and be a specific project that showcases my programming skills. Written all in Python and gaining information on the game using OpenGL and Tesseract, it requires no connection to the game itself for it to know what's on the screen.
+
+## Features
+- Able to identify the Balatro window by itself and set it up, along with starting a new run and essentially starting playing the game.
+- Can identify all cards, jokers, booster packs, and other things in the game without needing to access the program memory.
+- Plays the game, using almost all aspects of the game, including using items, buying stuff from the shop, and using discards.
+- Takes preferences with specific cards and other things using weighted relations taken from a CSV file.
+
+## How to install/use
+
+1. Install Balatro from anywhere and Tesseract.
+2. Clone the repo ```git clone https://www.github.com/raienelliston/Balatro-Bot.git```
+3. Add your settings in the config.txt
+4. Run the commands below
+
+```
+pip install -r requirements.txt
+python main.py
+```
 
 ## Seeds
 You can find seeds for Balatro from [here](https://balatroseeds.com/).
 
+### Notable Seeds
+None at the moment
+
 ## List of things to implement
+- [] Handle keeping track of SPECIFIC cards in the deck.
+
 
 ### Core
-- [x] Starting a run
-- [x] Selecting a hand in a bind
-- [x] Selecting cards to discard
-- [x] Buying from the shop
-- [x] Choosing items from packs
-- [x] Selecting bind or tag
+- [] Handle upside
 
 ### Card Types
-- [x] Regular Cards
-- [x] Bonus Card
-- [x] Mult Card
 - [] Wild Card
 - [x] Glass Card (Kinda)
-- [x] Steel Card
-- [x] Stone Card
 - [] Gold Card
 - [] Lucky Card
-- [x] Foil
-- [x] Holographic
-- [x] Polychrome
 - [] Negative
 - [] Gold Seal
 - [] Red Seal
@@ -34,232 +44,72 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [] Purple Seal
 
 ### Decks
-- [x] Red Deck
-- [x] Blue Deck
-- [x] Yellow Deck
 - [] Green Deck
-- [x] Black Deck
-- [x] Magic Deck
-- [x] Nebula Deck
-- [x] Ghost Deck
-- [x] Abandoned Deck
-- [x] Checkered Deck
-- [x] Zodiac Deck
-- [x] Painted Deck
 - [] Anaglyph Deck
 - [] Plasma Deck
 - [] Erratic Deck
 
 ### Stakes
-- [x] White Stake
 - [] Red Stake
 - [] Green Stake
 - [] Black Stake
 - [] Blue Stake
-- [x] Purple Stake
 - [] Orange Stake
 - [] Gold Stake
 
 ### Jokers
-- [x] Joker
-- [x] Greedy Joker
-- [x] Lusty Joker
-- [x] Wrathful Joker
-- [x] Gluttonous Joker
-- [x] Jolly Joker
-- [x] Zany Joker
-- [x] Mad Joker
-- [x] Crazy Joker
-- [x] Droll Joker
-- [x] Sly Joker
-- [x] Wily Joker
-- [x] Clever Joker
-- [x] Devious Joker
-- [x] Crafty Joker
-- [x] Half Joker
-- [x] Joker Stencil
-- [x] Four Fingers
-- [x] Mime
 - [] Credit Card (Just no?)
-- [x] Ceremonial Dagger
-- [x] Banner
-- [x] Mystic Summit
-- [x] Marble Joker
-- [x] Loyalty Card
-- [x] 8 Ball (Nothing Needed)
-- [x] Misprint
-- [x] Dusk
-- [x] Raised Fist
-- [x] Chaos the Clown
-- [x] Fibonacci
-- [x] Steel Joker
-- [x] Scary Face
-- [x] Abstract Joker
-- [x] Delayed Gratification
-- [x] Hack
-- [x] Pareidolia
-- [x] Gros Michel
-- [x] Even Steven
-- [x] Odd Todd
-- [x] Scholar
-- [x] Business Card
-- [x] Supernova
-- [x] Ride the Bus
 - [] Space Joker
-- [x] Egg
-- [x] Burglar
-- [x] Blackboard
-- [x] Runner
-- [x] Ice Cream
-- [x] DNA
-- [x] Splash
-- [x] Blue Joker
-- [x] Sixth Sense
-- [x] Constellation
 - [] Hiker
 - [] Faceless Joker
-- [x] Green Joker
 - [] Superposition
 - [] To Do List
 - [] Cavendish
 - [] Card Sharp
-- [x] Red Card
-- [x] Madness
-- [x] Square Joker
 - [] Séance
 - [] Riff-Raff
-- [x] Vampire
 - [x] Shortcut (Need to add check for if joker)
-- [x] Hologram
 - [] Vagabond
-- [x] Baron
 - [] Cloud 9
 - [] Rocket
-- [x] Obelisk
 - [] Midas Mask
 - [] Luchador
 - [x] Photograph (Need to add set_false at begining of bind)
 - [] Gift Card
-- [x] Turtle Bean
-- [x] Erosion
 - [x] Reserved Parking (Chance based)
 - [] Mail-In Rebate
 - [] To the Moon
 - [] Hallucination
-- [x] Fortune Teller
-- [x] Juggler
-- [x] Drunkard
-- [x] Stone Joker
 - [] Golden Joker
-- [x] Lucky Cat
-- [x] Baseball Card
-- [x] Bull
 - [] Diet Cola
 - [] Trading Card
-- [x] Flash Card
-- [x] Popcorn
-- [x] Spare Trousers
-- [x] Ancient Joker
-- [x] Ramen
-- [x] Walkie Talkie
-- [x] Seltzer
-- [x] Castle
-- [x] Smiley Face
-- [x] Campfire
 - [] Golden Ticket
 - [] Mr. Bones
-- [x] Acrobat
-- [x] Sock and Buskin
-- [x] Swashbuckler
 - [] Troubadour
 - [] Certificate
 - [] Smeared Joker
 - [x] Throwback (Needs update check)
-- [x] Hanging Chad
 - [] Rough Gem
-- [x] Bloodstone
-- [x] Arrowhead
-- [x] Onyx Agate
-- [x] Glass Joker
 - [] Showman
 - [x] Flower Pot (Needs active check)
 - [] Blueprint
-- [x] Wee Joker
 - [] Merry Andy
 - [] Oops! All 6s
 - [] The Idol
 - [] Seeing Double
 - [] Matador
-- [x] Hit the Road
-- [x] The Duo
-- [x] The Trio
-- [x] The Family
-- [x] The Order
-- [x] The Tribe
-- [x] Stuntman
 - [] Invisible Joker
 - [] Brainstorm
 - [] Satellite
-- [x] Shoot the Moon
-- [x] Driver's License
 - [] Cartomancer
 - [] Astronomer
 - [] Burnt Joker
-- [x] Bootstraps
-- [x] Canio
-- [x] Triboulet
-- [x] Yorick
 - [] Chicot
 - [] Perkeo
-
-### Tarot Cards
-- [] The Fool (0)
-- [] The Magician (I)
-- [] The High Priestess (II)
-- [] The Empress (III)
-- [] The Emperor (IV)
-- [] The Hierophant (V)
-- [] The Lovers (VI)
-- [] The Chariot (VII)
-- [] Justice (VIII)
-- [] The Hermit (IX)
-- [] The Wheel of Fortune (X)
-- [] Strength (XI)
-- [] The Hanged Man (XII)
-- [] Death (XIII)
-- [] Temperance (XIV)
-- [] The Devil (XV)
-- [] The Tower (XVI)
-- [] The Star (XVII)
-- [] The Moon (XVIII)
-- [] The Sun (XIX)
-- [] Judgement (XX)
-- [] The World (XXI)
-
-### Spectial Cards
-- [] Familiar
-- [] Grim
-- [] Incantation
-- [] Talisman
-- [] Aura
-- [] Wraith
-- [] Sigil
-- [] Ouija
-- [] Ectoplasm
-- [] Immolate
-- [] Ankh
-- [] Deja Vu
-- [] Hex
-- [] Trance
-- [] Medium
-- [] Cryptid
-- [] The Soul
-- [] Black Hole
 
 ### Boss Blinds
 - [x] Amber Acorn (Nothing Needed)
 - [] Verdant Leaf 
-- [x] Violet Vessel
 - [] Crimson Heart
 - [] Cerulean Bell
 - [] The Hook
@@ -268,20 +118,9 @@ You can find seeds for Balatro from [here](https://balatroseeds.com/).
 - [x] The Wall (Nothing Needed)
 - [] The Wheel
 - [] The Arm
-- [x] The Club
 - [] The Fish
-- [x] The Psychic
-- [x] The Goad
-- [x] The Water
-- [x] The Window
 - [x] The Manacle (Nothing Needed)
-- [x] The Eye
-- [x] The Mouth
-- [x] The Plant
 - [x] The Serpent (Nothing Needed)
 - [] The Pillar
-- [x] The Needle
-- [x] The Head
-- [x] The Tooth
 - [] The Flint
 - [] The Mark
